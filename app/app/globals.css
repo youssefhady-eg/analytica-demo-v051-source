@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background: #070b12;
+  color: #f1f5f9;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+}
+
+/* thin dark scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+/* P3-05: tables keep a sticky name column under horizontal scroll. The
+ *  solid background matches the card fill so scrolled cells slide under it. */
+table.sticky-first th:first-child,
+table.sticky-first td:first-child {
+  position: sticky;
+  left: 0;
+  background: #0e121d;
+  z-index: 1;
+}
+/* soft glow for the money numbers */
+.glow-money {
+  text-shadow: 0 0 24px rgba(52, 211, 153, 0.35);
+}
+
+.glow-cyan {
+  text-shadow: 0 0 24px rgba(34, 211, 238, 0.4);
+}
+
+/* pulsing live dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* P3-09: every interactive element gets a visible keyboard focus ring. */
+:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+/* P3-10: honoring prefers-reduced-motion — no pulse, no glow animation,
+ * no smooth scrolling. (JS smooth scrollTo is gated separately.) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .pulse-dot {
+    animation: none;
+  }
+  .glow-money,
+  .glow-cyan {
+    text-shadow: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

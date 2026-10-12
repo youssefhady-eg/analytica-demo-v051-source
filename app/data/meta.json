@@ -1,0 +1,17 @@
+{
+  "brand": {
+    "name": "Cairo Thread",
+    "note": "Fictional D2C fashion brand \u2014 sample data",
+    "monthly_ad_spend_egp": 80000,
+    "aov_egp": 850
+  },
+  "assumptions": [
+    "A1 Delivered orders count full order value as revenue.",
+    "A2 Refused/RTO orders bring zero revenue but paid shipping; RTO also paid return shipping.",
+    "A3 Cancelled orders never shipped \u2014 excluded entirely.",
+    "A4 COGS counted only on delivered orders (refused goods assumed restockable).",
+    "A5 Platform ROAS is taken as reported, not re-computed.",
+    "A7 Blended true POAS = total profit / total spend; blended platform ROAS = spend-weighted average."
+  ],
+  "generated_with": "seed=7, reproducible"
+}

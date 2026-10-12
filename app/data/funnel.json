@@ -1,0 +1,674 @@
+[
+  {
+    "date": "2026-09-25",
+    "channel": "meta",
+    "step": "session",
+    "count": 4952
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 663
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 339
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 30
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 6005
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 688
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 319
+  },
+  {
+    "date": "2026-09-25",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 25
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "meta",
+    "step": "session",
+    "count": 5484
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 795
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 397
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 33
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 6180
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 739
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 344
+  },
+  {
+    "date": "2026-09-26",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 27
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "meta",
+    "step": "session",
+    "count": 4938
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 714
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 352
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 30
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5680
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 688
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 294
+  },
+  {
+    "date": "2026-09-27",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 24
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "meta",
+    "step": "session",
+    "count": 5154
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 722
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 347
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 31
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 6093
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 757
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 334
+  },
+  {
+    "date": "2026-09-28",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 27
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "meta",
+    "step": "session",
+    "count": 5101
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 732
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 349
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 32
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 6221
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 746
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 336
+  },
+  {
+    "date": "2026-09-29",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 27
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "meta",
+    "step": "session",
+    "count": 5231
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 697
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 364
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 31
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5505
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 634
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 278
+  },
+  {
+    "date": "2026-09-30",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 23
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "meta",
+    "step": "session",
+    "count": 4809
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 646
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 329
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 28
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5352
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 648
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 293
+  },
+  {
+    "date": "2026-10-01",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 24
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "meta",
+    "step": "session",
+    "count": 5368
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 721
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 373
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 34
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5377
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 620
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 278
+  },
+  {
+    "date": "2026-10-02",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 21
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "meta",
+    "step": "session",
+    "count": 5016
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 675
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 334
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 28
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5885
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 731
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 317
+  },
+  {
+    "date": "2026-10-03",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 22
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "meta",
+    "step": "session",
+    "count": 5405
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 731
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 377
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 35
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5696
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 678
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 315
+  },
+  {
+    "date": "2026-10-04",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 20
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "meta",
+    "step": "session",
+    "count": 5113
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 747
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 383
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 33
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5559
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 656
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 293
+  },
+  {
+    "date": "2026-10-05",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 17
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "meta",
+    "step": "session",
+    "count": 5453
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 794
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 409
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 37
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5385
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 647
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 304
+  },
+  {
+    "date": "2026-10-06",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 16
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "meta",
+    "step": "session",
+    "count": 4991
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 693
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 351
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 30
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 5828
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 669
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 299
+  },
+  {
+    "date": "2026-10-07",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 14
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "meta",
+    "step": "session",
+    "count": 4801
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "meta",
+    "step": "add_to_cart",
+    "count": 647
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "meta",
+    "step": "checkout",
+    "count": 338
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "meta",
+    "step": "purchase",
+    "count": 30
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "tiktok",
+    "step": "session",
+    "count": 6205
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "tiktok",
+    "step": "add_to_cart",
+    "count": 754
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "tiktok",
+    "step": "checkout",
+    "count": 349
+  },
+  {
+    "date": "2026-10-08",
+    "channel": "tiktok",
+    "step": "purchase",
+    "count": 14
+  }
+]

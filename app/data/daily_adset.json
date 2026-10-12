@@ -1,0 +1,142 @@
+[
+  {
+    "date": "2026-09-25",
+    "adset_id": "spring-broad",
+    "spend_egp": 765.19,
+    "platform_roas": 3.351,
+    "cpc_egp": 4.92,
+    "ctr_pct": 2.23,
+    "aov_egp": 868.82,
+    "failed_delivery_rate_pct": 11.87
+  },
+  {
+    "date": "2026-09-26",
+    "adset_id": "spring-broad",
+    "spend_egp": 787.12,
+    "platform_roas": 3.462,
+    "cpc_egp": 4.98,
+    "ctr_pct": 2.08,
+    "aov_egp": 863.88,
+    "failed_delivery_rate_pct": 11.86
+  },
+  {
+    "date": "2026-09-27",
+    "adset_id": "spring-broad",
+    "spend_egp": 783.53,
+    "platform_roas": 3.421,
+    "cpc_egp": 5.17,
+    "ctr_pct": 2.05,
+    "aov_egp": 892.92,
+    "failed_delivery_rate_pct": 10.96
+  },
+  {
+    "date": "2026-09-28",
+    "adset_id": "spring-broad",
+    "spend_egp": 752.13,
+    "platform_roas": 3.343,
+    "cpc_egp": 5.03,
+    "ctr_pct": 1.97,
+    "aov_egp": 888.55,
+    "failed_delivery_rate_pct": 11.11
+  },
+  {
+    "date": "2026-09-29",
+    "adset_id": "spring-broad",
+    "spend_egp": 681.22,
+    "platform_roas": 3.459,
+    "cpc_egp": 5.06,
+    "ctr_pct": 2.07,
+    "aov_egp": 866.23,
+    "failed_delivery_rate_pct": 10.54
+  },
+  {
+    "date": "2026-09-30",
+    "adset_id": "spring-broad",
+    "spend_egp": 783.14,
+    "platform_roas": 3.374,
+    "cpc_egp": 5.0,
+    "ctr_pct": 2.1,
+    "aov_egp": 872.72,
+    "failed_delivery_rate_pct": 11.81
+  },
+  {
+    "date": "2026-10-01",
+    "adset_id": "spring-broad",
+    "spend_egp": 676.74,
+    "platform_roas": 3.477,
+    "cpc_egp": 4.93,
+    "ctr_pct": 2.22,
+    "aov_egp": 886.73,
+    "failed_delivery_rate_pct": 10.42
+  },
+  {
+    "date": "2026-10-02",
+    "adset_id": "spring-broad",
+    "spend_egp": 730.03,
+    "platform_roas": 3.259,
+    "cpc_egp": 5.05,
+    "ctr_pct": 2.01,
+    "aov_egp": 855.71,
+    "failed_delivery_rate_pct": 13.41
+  },
+  {
+    "date": "2026-10-03",
+    "adset_id": "spring-broad",
+    "spend_egp": 806.39,
+    "platform_roas": 3.254,
+    "cpc_egp": 4.96,
+    "ctr_pct": 2.04,
+    "aov_egp": 858.13,
+    "failed_delivery_rate_pct": 12.97
+  },
+  {
+    "date": "2026-10-04",
+    "adset_id": "spring-broad",
+    "spend_egp": 766.55,
+    "platform_roas": 3.046,
+    "cpc_egp": 5.49,
+    "ctr_pct": 1.95,
+    "aov_egp": 835.71,
+    "failed_delivery_rate_pct": 14.97
+  },
+  {
+    "date": "2026-10-05",
+    "adset_id": "spring-broad",
+    "spend_egp": 680.55,
+    "platform_roas": 2.892,
+    "cpc_egp": 5.4,
+    "ctr_pct": 2.11,
+    "aov_egp": 792.0,
+    "failed_delivery_rate_pct": 16.58
+  },
+  {
+    "date": "2026-10-06",
+    "adset_id": "spring-broad",
+    "spend_egp": 793.76,
+    "platform_roas": 2.819,
+    "cpc_egp": 5.24,
+    "ctr_pct": 1.99,
+    "aov_egp": 772.92,
+    "failed_delivery_rate_pct": 18.68
+  },
+  {
+    "date": "2026-10-07",
+    "adset_id": "spring-broad",
+    "spend_egp": 764.37,
+    "platform_roas": 2.709,
+    "cpc_egp": 4.95,
+    "ctr_pct": 1.98,
+    "aov_egp": 771.2,
+    "failed_delivery_rate_pct": 19.56
+  },
+  {
+    "date": "2026-10-08",
+    "adset_id": "spring-broad",
+    "spend_egp": 700.17,
+    "platform_roas": 2.603,
+    "cpc_egp": 5.27,
+    "ctr_pct": 2.16,
+    "aov_egp": 760.46,
+    "failed_delivery_rate_pct": 21.17
+  }
+]

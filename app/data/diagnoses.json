@@ -1,0 +1,12 @@
+{
+  "case_roas_drop": {
+    "trigger": "Spring Collection \u2013 Broad: ROAS \u221222% in 14 days.",
+    "diagnosis": "Your ads are fine. The leak is post-click \u2014 orders aren't turning into cash.",
+    "action": "Pause creative D, shift its EGP 6,500/month budget to creatives A and B."
+  },
+  "case_funnel_leak": {
+    "trigger": "TikTok checkout \u2192 purchase cut in half in 7 days.",
+    "diagnosis": "Traffic is fine. TikTok buyers stall at checkout.",
+    "action": "WhatsApp nudge to TikTok checkout abandoners from the last 48h."
+  }
+}

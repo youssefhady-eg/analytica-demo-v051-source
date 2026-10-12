@@ -1,0 +1,74 @@
+[
+  {
+    "id": "spring-broad",
+    "name": "Spring Collection \u2013 Broad",
+    "channel": "Meta",
+    "spend_egp": 22000,
+    "platform_roas": 3.4,
+    "true_poas": 1.363,
+    "gap": 2.037,
+    "profit_egp": 29991.82,
+    "orders": 131,
+    "delivered_share": 0.771,
+    "economics": {
+      "revenue_egp": 87961.41,
+      "cogs_egp": 49029.59,
+      "ship_egp": 6060.0,
+      "failed_egp": 2880.0
+    }
+  },
+  {
+    "id": "retarget-atc",
+    "name": "Retargeting \u2013 ATC 30d",
+    "channel": "Meta",
+    "spend_egp": 18000,
+    "platform_roas": 4.1,
+    "true_poas": 1.819,
+    "gap": 2.281,
+    "profit_egp": 32747.2,
+    "orders": 150,
+    "delivered_share": 0.793,
+    "economics": {
+      "revenue_egp": 96502.82,
+      "cogs_egp": 53795.62,
+      "ship_egp": 7140.0,
+      "failed_egp": 2820.0
+    }
+  },
+  {
+    "id": "lookalike-purch",
+    "name": "Lookalike \u2013 Purchasers",
+    "channel": "Meta",
+    "spend_egp": 24000,
+    "platform_roas": 2.9,
+    "true_poas": 0.824,
+    "gap": 2.076,
+    "profit_egp": 19783.93,
+    "orders": 130,
+    "delivered_share": 0.615,
+    "economics": {
+      "revenue_egp": 69850.5,
+      "cogs_egp": 40826.57,
+      "ship_egp": 4800.0,
+      "failed_egp": 4440.0
+    }
+  },
+  {
+    "id": "tiktok-prosp",
+    "name": "TikTok \u2013 Prospecting",
+    "channel": "TikTok",
+    "spend_egp": 16000,
+    "platform_roas": 3.8,
+    "true_poas": 0.808,
+    "gap": 2.992,
+    "profit_egp": 12926.89,
+    "orders": 110,
+    "delivered_share": 0.573,
+    "economics": {
+      "revenue_egp": 50532.31,
+      "cogs_egp": 29625.42,
+      "ship_egp": 3780.0,
+      "failed_egp": 4200.0
+    }
+  }
+]
