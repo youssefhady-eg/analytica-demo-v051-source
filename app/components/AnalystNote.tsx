@@ -15,11 +15,14 @@ export default function AnalystNote({
   caseTitle,
   metrics,
   rulesText,
+  tourId,
 }: {
   stage: Stage;
   caseTitle: string;
   metrics: Record<string, unknown>;
   rulesText: string;
+  /** Phase 4: spotlight target id (rendered as data-tour when set). */
+  tourId?: string;
 }) {
   const { enabled, apiKey, narrate, busy } = useAnalyst();
   const [liveText, setLiveText] = useState<string | null>(null);
@@ -47,7 +50,10 @@ export default function AnalystNote({
   const live = enabled && liveText;
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-cyan-400/20 bg-gradient-to-br from-cyan-400/[0.07] to-transparent p-5">
+    <div
+      data-tour={tourId}
+      className="relative overflow-hidden rounded-xl border border-cyan-400/20 bg-gradient-to-br from-cyan-400/[0.07] to-transparent p-5"
+    >
       <div className="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-cyan-300 to-cyan-600" />
       <div className="mb-2 flex items-center gap-2">
         <span className={`h-2 w-2 rounded-full ${live ? "bg-cyan-300 pulse-dot" : "bg-emerald-400"}`} />

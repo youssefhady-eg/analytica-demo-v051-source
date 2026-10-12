@@ -99,6 +99,7 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
       </p>
 
       <Card className="mb-6 p-5">
+        <div data-tour="upload-files">
         <Title>Files</Title>
         <div className="mt-4 space-y-4">
           {FILES.map((f) => (
@@ -125,6 +126,7 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
               <p className="w-full font-mono text-xs text-slate-400">{f.hint}</p>
             </div>
           ))}
+        </div>
         </div>
       </Card>
 

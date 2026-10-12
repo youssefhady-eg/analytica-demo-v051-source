@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useDemoData } from "./DataProvider";
+import { useTour } from "./TourProvider";
 import DataBadge from "./DataBadge";
 import type { View } from "./ViewShell";
 
@@ -75,8 +76,27 @@ export default function SiteNav({ view, onNav }: { view: View; onNav: (v: View) 
           >
             ↑ Load your CSVs
           </button>
+          <PresentButton />
         </nav>
       </div>
     </header>
+  );
+}
+
+/** Phase 4 entry: opens the track picker. Lives in the nav scroller so it
+ *  stays visible on phones (P3-01). */
+function PresentButton() {
+  const { setPickerOpen, active } = useTour();
+  return (
+    <button
+      onClick={() => setPickerOpen(true)}
+      className={`flex min-h-[44px] flex-none snap-start items-center rounded-md px-3 py-1.5 font-mono text-[13px] font-medium ${
+        active
+          ? "bg-cyan-400 text-slate-950"
+          : "text-cyan-300 ring-1 ring-cyan-400/30 hover:bg-cyan-400/10"
+      }`}
+    >
+      Present
+    </button>
   );
 }

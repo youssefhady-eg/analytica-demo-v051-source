@@ -1,6 +1,7 @@
 "use client";
 import { Card, Metric, Text, Title, Eyebrow } from "@/components/ui";
 import { useDemoData, type Disposition } from "@/components/DataProvider";
+import { useTour } from "@/components/TourProvider";
 import { buildCases, detectorStatus, getCase, snapshotLabel, waitingCases } from "@/lib/cases";
 import { narrate, narrationMetrics, type Stage } from "@/lib/narrate";
 import AnalystNote from "@/components/AnalystNote";
@@ -35,6 +36,10 @@ export default function ViewDetect({
   onUpload: () => void;
 }) {
   const { data, watchlist, dispositions, undoDisposition, simulateWorsening } = useDemoData();
+  // Phase 4: the tour pre-expands this log and hides demo controls in Clean view.
+  const tour = useTour();
+  const expandLog = tour.expandLog;
+  const showSimulate = !tour.hideDemoControls || tour.step?.needsDemoControls === true;
   const { adsets } = data;
   const cases = buildCases(data);
   // P1-01 + P2: rank and number only what still waits — one selector, shared
@@ -97,7 +102,7 @@ export default function ViewDetect({
       </p>
       <Stepper current={stage} />
 
-      <div className="mb-6 grid gap-4 md:grid-cols-3">
+      <div data-tour="detect-hooks" className="mb-6 grid gap-4 md:grid-cols-3">
         <Card className="p-5">
           <Text>Blended platform ROAS</Text>
           <Metric className="mt-1">{fmtX(blendedRoas)}</Metric>
@@ -158,7 +163,7 @@ export default function ViewDetect({
           </Text>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div data-tour="detect-list" className="space-y-3">
           {waiting.map((c, i) => (
             <button
               key={c.id}
@@ -246,6 +251,7 @@ export default function ViewDetect({
         <AnalystNote
           stage={stage}
           caseTitle="morning triage"
+          tourId="detect-analyst"
           metrics={{
             ...narrationMetrics(stage, waiting[0] ?? cases[0] ?? { id: "none", kind: "roas-drop", title: "triage", detail: "", impactEgp: null, adsetId: null, channel: null, stepIdx: null, source: "detected" }, data),
             human_overrides: overrideList,
@@ -262,7 +268,11 @@ export default function ViewDetect({
       </div>
 
       {handled.length > 0 && (
-        <details className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+        <details
+          data-tour="handled-log"
+          open={expandLog ? true : undefined}
+          className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4"
+        >
           <summary className="cursor-pointer text-sm font-medium text-slate-300">
             Handled & snoozed ({handled.length})
           </summary>
@@ -291,6 +301,7 @@ export default function ViewDetect({
                     <span className="font-mono text-xs text-slate-400">
                       {snapshotLabel(r.disp.snapshot)} at snooze
                     </span>
+                    {showSimulate && (
                     <button
                       onClick={() => simulateWorsening(r.id)}
                       className="flex min-h-[44px] items-center font-mono text-xs text-slate-400 underline decoration-dotted hover:text-cyan-300"
@@ -298,6 +309,7 @@ export default function ViewDetect({
                     >
                       Simulate worsening (demo)
                     </button>
+                    )}
                   </>
                 )}
                 {r.disp.kind === "override" && (

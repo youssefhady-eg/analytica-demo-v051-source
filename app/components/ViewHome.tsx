@@ -12,12 +12,14 @@ export default function ViewHome({ onNav }: { onNav: (v: "detect" | "upload") =>
   const nCases = waitingCases(data, watchlist, dispositions).length;
   return (
     <div className="mx-auto max-w-2xl py-14 text-center">
+      <div data-tour="home-hero">
       <Eyebrow className="mb-3">Analytica · the Agentic Intelligence Layer</Eyebrow>
       <h1 className="mb-4 text-5xl font-bold tracking-tight text-slate-50">
         Don&apos;t read your numbers.
         <br />
         <span className="glow-cyan text-cyan-300">Work the case.</span>
       </h1>
+      </div>
       <p className="mb-2 text-lg text-slate-400">
         Analytica watches your profit, flags what moved, and walks you through the
         investigation — detect, isolate, diagnose, decide, verify — with an analyst
@@ -49,7 +51,7 @@ export default function ViewHome({ onNav }: { onNav: (v: "detect" | "upload") =>
         )}
       </div>
 
-      <div className="mt-14 rounded-xl border border-white/10 bg-white/[0.03] p-6 text-left">
+      <div data-tour="home-ecosystem" className="mt-14 rounded-xl border border-white/10 bg-white/[0.03] p-6 text-left">
         <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
           Where Analytica sits
         </p>

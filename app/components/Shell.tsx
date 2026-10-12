@@ -5,6 +5,7 @@ import SiteNav from "@/components/SiteNav";
 import AiToggle from "@/components/AiToggle";
 import { DataProvider } from "@/components/DataProvider";
 import { AnalystProvider } from "@/components/AnalystProvider";
+import { TourProvider } from "@/components/TourProvider";
 import ViewHome from "@/components/ViewHome";
 import ViewDetect from "@/components/ViewDetect";
 import ViewCase from "@/components/ViewCase";
@@ -31,8 +32,11 @@ export default function Shell() {
   return (
     <DataProvider>
       <AnalystProvider>
-        <SiteNav view={navView} onNav={go} />
-        <main className="mx-auto max-w-6xl px-4 py-8">
+        {/* Phase 4: the tour drives the real app through Shell's `go` — normal
+            behavior is unchanged when no tour is active. */}
+        <TourProvider go={go}>
+          <SiteNav view={navView} onNav={go} />
+          <main className="mx-auto max-w-6xl px-4 py-8">
           {view === "home" && <ViewHome onNav={(v) => go(v)} />}
           {view === "detect" && (
             <ViewDetect
@@ -59,6 +63,7 @@ export default function Shell() {
           Analytica product sample — figures are fictional in sample mode, computed from your CSVs in upload mode.
         </footer>
         <AiToggle lift={typeof view !== "string"} />
+        </TourProvider>
       </AnalystProvider>
     </DataProvider>
   );

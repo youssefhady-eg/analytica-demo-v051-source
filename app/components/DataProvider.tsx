@@ -35,6 +35,8 @@ interface DataCtx {
   undoDisposition: (caseId: string) => void;
   /** Demo-only worsening overlay (§7.3) — multiplies the tracked metric. */
   simulateWorsening: (caseId: string) => void;
+  /** Phase 4 presenter reset — clears watchlist, dispositions and overlay. */
+  clearDecisions: () => void;
 }
 
 const Ctx = createContext<DataCtx>({
@@ -48,6 +50,7 @@ const Ctx = createContext<DataCtx>({
   dismiss: () => {},
   undoDisposition: () => {},
   simulateWorsening: () => {},
+  clearDecisions: () => {},
 });
 
 /** Synthetic overlay factor that pushes the tracked metric past the 2%
@@ -139,6 +142,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const clearDecisions = useCallback(() => {
+    setWatchlist([]);
+    setDispositions({});
+    setSimulated({});
+  }, []);
+
   const simulateWorsening = useCallback(
     (caseId: string) => {
       const c = getCase(data, caseId);
@@ -156,8 +165,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<DataCtx>(
-    () => ({ data, setCsvData, resetSample, watchlist, watch, unwatch, dispositions, dismiss, undoDisposition, simulateWorsening }),
-    [data, setCsvData, resetSample, watchlist, watch, unwatch, dispositions, dismiss, undoDisposition, simulateWorsening]
+    () => ({ data, setCsvData, resetSample, watchlist, watch, unwatch, dispositions, dismiss, undoDisposition, simulateWorsening, clearDecisions }),
+    [data, setCsvData, resetSample, watchlist, watch, unwatch, dispositions, dismiss, undoDisposition, simulateWorsening, clearDecisions]
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

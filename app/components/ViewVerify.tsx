@@ -48,7 +48,7 @@ export default function ViewVerify({
           </button>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div data-tour="verify-list" className="space-y-4">
           {cases.map((c) => (
             <Card key={c.id} className="border-t-2 border-t-emerald-400 p-5">
               <div className="flex items-start justify-between gap-4">

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Text, Title, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Eyebrow } from "@/components/ui";
 import { useDemoData, type DismissReason, type Disposition } from "@/components/DataProvider";
+import { useTour } from "@/components/TourProvider";
 import { getCase, evidenceLayers, casePlan, type CaseItem } from "@/lib/cases";
 import { narrate, narrationMetrics, type Stage } from "@/lib/narrate";
 import { detectRoasDrop } from "@/lib/diagnose";
@@ -47,6 +48,16 @@ export default function ViewCase({
   const [stage, setStage] = useState<Stage>("isolate");
   const [revealed, setRevealed] = useState(1);
   const [decided, setDecided] = useState(false);
+  // Phase 4: the tour drives the stage when this case is open (hooks stay
+  // above the early return; the tour is inert when inactive).
+  const tour = useTour();
+  useEffect(() => {
+    const s = tour.active ? tour.step : null;
+    if (s && c && typeof s.view !== "string" && s.view.case === c.id && s.stage) {
+      setStage(s.stage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour.active, tour.step, c?.id]);
 
   if (!c) {
     return (
@@ -101,6 +112,14 @@ export default function ViewCase({
   const layers = evidenceLayers(c, data);
   // P2 §7.7: an override follows the case into Decide.
   const isOverride = dispositions[c.id]?.kind === "override";
+  // Phase 4: the tour drives the real case — stage follows the step when this
+  // case is open; layers peel on arrival. Untouched when no tour is active.
+  const tourStep = tour.active ? tour.step : null;
+  const tourHere =
+    tourStep && typeof tourStep.view !== "string" && tourStep.view.case === c.id
+      ? tourStep
+      : null;
+  const shownRevealed = tourHere?.revealLayers ? layers.length : revealed;
 
   return (
     <div className="pb-24 md:pb-0">
@@ -145,12 +164,12 @@ export default function ViewCase({
           caseTitle={c.title}
           metrics={
             stage === "diagnose"
-              ? narrationMetrics(stage, c, data, { revealed, totalLayers: layers.length })
+              ? narrationMetrics(stage, c, data, { revealed: shownRevealed, totalLayers: layers.length })
               : narrationMetrics(stage, c, data)
           }
           rulesText={
             stage === "diagnose"
-              ? narrate(stage, c, data, { revealed, totalLayers: layers.length })
+              ? narrate(stage, c, data, { revealed: shownRevealed, totalLayers: layers.length })
               : stage === "decide"
                 ? narrate(stage, c, data, { approved: isWatching, override: isOverride })
                 : narrate(stage, c, data)
@@ -160,7 +179,7 @@ export default function ViewCase({
 
       {stage === "isolate" && <IsolateStage c={c} onUpload={onUpload} onBack={onBack} />}
       {stage === "diagnose" && (
-        <DiagnoseStage c={c} revealed={revealed} setRevealed={setRevealed} />
+        <DiagnoseStage c={c} revealed={shownRevealed} setRevealed={setRevealed} />
       )}
       {stage === "decide" && (
         <DecideStage c={c} isWatching={isWatching} onApprove={onApprove} onBack={onBack} />
@@ -197,7 +216,7 @@ function stageLabel(s: Stage): string {
 function IsolateStage({ c, onUpload, onBack }: { c: CaseItem; onUpload: () => void; onBack: () => void }) {
   const { data } = useDemoData();
   return (
-    <div className="space-y-6">
+    <div data-tour="isolate-evidence" className="space-y-6">
       {c.kind === "roas-drop" && c.adsetId && (
         <>
           <Card className="p-5">
@@ -325,7 +344,7 @@ function DiagnoseStage({ c, revealed, setRevealed }: { c: CaseItem; revealed: nu
   const rc = c.kind === "roas-drop" ? detectRoasDrop(data) : null;
 
   return (
-    <div className="space-y-4">
+    <div data-tour="diagnose-layers" className="space-y-4">
       {layers.slice(0, revealed).map((l, i) => (
         <Card key={i} className={`border-l-2 p-5 ${l.verdict === "ok" ? "border-l-emerald-400" : "border-l-rose-500"}`}>
           <p className="flex flex-wrap items-center gap-2">
@@ -438,7 +457,7 @@ function DecideStage({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-cyan-400/25 bg-gradient-to-br from-cyan-400/[0.06] to-transparent p-5">
+      <div data-tour="decide-plan" className="rounded-xl border border-cyan-400/25 bg-gradient-to-br from-cyan-400/[0.06] to-transparent p-5">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">
             Action plan — where to focus

@@ -28,6 +28,14 @@ table.sticky-first td:first-child {
   background: #0e121d;
   z-index: 1;
 }
+
+/* Phase 4: presenter spotlight — a static ring that changes no layout. */
+.tour-spotlight {
+  outline: 2px solid #22d3ee !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.15);
+  border-radius: 12px;
+}
 /* soft glow for the money numbers */
 .glow-money {
   text-shadow: 0 0 24px rgba(52, 211, 153, 0.35);
