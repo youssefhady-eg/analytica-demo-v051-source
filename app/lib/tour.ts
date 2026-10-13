@@ -59,6 +59,8 @@ export interface TourStep {
   target?: string;
   /** Force the Detect handled-log open on arrival. */
   expandLog?: boolean;
+  /** Open the Ask drawer on arrival (Phase 5). */
+  openAsk?: boolean;
   /** Demo action the step performs on arrival (approve / dismiss / reset). */
   demoAction?: DemoAction;
   /** Keep demo-only controls visible in Clean view for this step. */
@@ -152,8 +154,10 @@ export const VONDERA_TRACK: TourStep[] = [
     track: "vondera",
     title: "Ask in words",
     view: "detect",
+    openAsk: true,
+    target: "ask-panel",
     caption: () => "Ask questions in plain words — answered only from governed metrics.",
-    notes: "Ask panel lands in Phase 5 (not built yet) — name it as the roadmap: conversational layer over the same governed metrics, never actions.",
+    notes: "The drawer answers from the same governed metrics — click a suggested chip live. Rules by default, ✨ live behind the BYOK toggle.",
   },
   {
     id: "v-reset",
@@ -237,7 +241,7 @@ export const MARKETER_TRACK: TourStep[] = [
     title: "Verify",
     view: "verify",
     target: "verify-list",
-    caption: () => "Every approval lands here — watched until the metric recovers.",
+    caption: () => "Every approval lands here. In production, this is where the recovery gets watched.",
     notes: "Trust compounds when the tool shows receipts. Empty state teaches the loop if nothing is approved yet.",
   },
   {

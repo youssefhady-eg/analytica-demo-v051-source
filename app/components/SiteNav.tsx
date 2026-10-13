@@ -9,8 +9,7 @@ import type { View } from "./ViewShell";
 /** P3-01: two rows max on phones — row 1 wordmark + data badge, row 2 a
  *  horizontally scrollable nav (no wrap, snap). The active tab is scrolled
  *  into view; every target is ≥ 44px (P3-07). */
-export default function SiteNav({ view, onNav }: { view: View; onNav: (v: View) => void }) {
-  const { watchlist } = useDemoData();
+export default function SiteNav({ view, onNav, onAsk }: { view: View; onNav: (v: View) => void; onAsk: () => void }) {  const { watchlist } = useDemoData();
   const navRef = useRef<HTMLElement>(null);
   const LINKS: { id: View; label: string }[] = [
     { id: "home", label: "Home" },
@@ -77,6 +76,12 @@ export default function SiteNav({ view, onNav }: { view: View; onNav: (v: View) 
             ↑ Load your CSVs
           </button>
           <PresentButton />
+          <button
+            onClick={onAsk}
+            className="flex min-h-[44px] flex-none snap-start items-center rounded-md px-3 py-1.5 font-mono text-[13px] font-medium text-cyan-300 ring-1 ring-cyan-400/30 hover:bg-cyan-400/10"
+          >
+            Ask
+          </button>
         </nav>
       </div>
     </header>

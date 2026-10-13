@@ -86,9 +86,12 @@ function resolveView(view: View, topId: string | null): View {
  */
 export function TourProvider({
   go,
+  onAskPanel,
   children,
 }: {
   go: (v: View) => void;
+  /** Phase 5: open the Ask drawer (used by steps with openAsk). */
+  onAskPanel?: () => void;
   children: ReactNode;
 }) {
   const { data, watchlist, dispositions, watch, dismiss, clearDecisions } = useDemoData();
@@ -96,10 +99,16 @@ export function TourProvider({
   const [index, setIndex] = useState(0);
   const [cleanView, setCleanView] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  // Q3 follow-up: the TOP case is pinned per step on first arrival — revisits
+  // and arrow keys reuse the pinned id and can never act on a different case.
+  // null = pinned as absent (falls back to Detect, action skipped).
+  const [pinned, setPinned] = useState<Record<string, string | null>>({});
 
   // Shell's go is a new identity every render — effects use the ref.
   const goRef = useRef(go);
   goRef.current = go;
+  const askRef = useRef(onAskPanel);
+  askRef.current = onAskPanel;
 
   const active = track !== null;
   const steps = useMemo(() => (track ? trackSteps(track) : []), [track]);
@@ -108,23 +117,41 @@ export function TourProvider({
     [data, watchlist, dispositions]
   );
 
-  // Drive the app on arrival: demo action first (against pre-arrival state),
-  // then navigation. All actions are idempotent — Back/Next revisits are safe.
+  // Drive the app on arrival: pin the step's case on first visit, run the
+  // demo action against the pinned (pre-arrival) case, then navigate. All
+  // actions are idempotent — Back/Next revisits reuse the pin and are safe.
   useEffect(() => {
     if (!track) return;
-    const arriving = trackSteps(track)[index];
-    if (!arriving) return;
-    const topId = resolveTopCase(data, watchlist, dispositions);
-    if (arriving.demoAction === "approve-top") {
-      if (topId) watch(topId);
-    } else if (arriving.demoAction === "snooze-top") {
-      if (topId) dismiss(topId, "not-now");
-    } else if (arriving.demoAction === "disagree-top") {
-      if (topId) dismiss(topId, "disagree");
-    } else if (arriving.demoAction === "reset") {
+    const raw = trackSteps(track)[index];
+    if (!raw) return;
+    const needsPin =
+      (typeof raw.view !== "string" && raw.view.case === TOP_CASE) ||
+      (raw.demoAction !== undefined && raw.demoAction !== "reset");
+    let id: string | null | undefined = pinned[raw.id];
+    if (id === undefined && needsPin) {
+      id = resolveTopCase(data, watchlist, dispositions);
+      const pinnedId: string | null = id;
+      setPinned((p) => ({ ...p, [raw.id]: pinnedId }));
+    }
+    const view =
+      typeof raw.view !== "string" && raw.view.case === TOP_CASE
+        ? resolveView(raw.view, id ?? null)
+        : raw.view;
+    const actionId = raw.demoAction && raw.demoAction !== "reset" ? (id ?? null) : null;
+    if (raw.demoAction === "approve-top") {
+      if (actionId) watch(actionId);
+    } else if (raw.demoAction === "snooze-top") {
+      if (actionId) dismiss(actionId, "not-now");
+    } else if (raw.demoAction === "disagree-top") {
+      if (actionId) dismiss(actionId, "disagree");
+    } else if (raw.demoAction === "reset") {
       clearDecisions();
     }
-    goRef.current(resolveView(arriving.view, topId));
+    goRef.current(view);
+    // Ask opens after navigation (Shell's go closes it).
+    if (raw.openAsk) askRef.current?.();
+    // Deliberately [track, index]: re-pinning or re-acting on data changes
+    // would let a revisit hit a different case — the pinned id rules.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track, index]);
 
@@ -133,21 +160,27 @@ export function TourProvider({
     const raw = steps[index];
     if (!raw) return null;
     if (typeof raw.view !== "string" && raw.view.case === TOP_CASE) {
-      const topId = resolveTopCase(data, watchlist, dispositions);
-      return { ...raw, view: resolveView(raw.view, topId) };
+      const id =
+        pinned[raw.id] !== undefined
+          ? pinned[raw.id]
+          : resolveTopCase(data, watchlist, dispositions);
+      return { ...raw, view: resolveView(raw.view, id) };
     }
     return raw;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [track, index, data, watchlist, dispositions]);
+  }, [track, index, steps, data, watchlist, dispositions, pinned]);
 
   // Spotlight: ring the target without touching layout; missing targets are
   // fine (caption still shows). Respects reduced motion (no smooth scroll).
+  // Q4 follow-up: on phones the target scrolls ABOVE the bottom-sheet panel
+  // so the panel never hides what it spotlights.
   useEffect(() => {
     document.querySelectorAll(".tour-spotlight").forEach((el) => el.classList.remove("tour-spotlight"));
     if (!track || !step?.target) return;
     const reduced =
       typeof window.matchMedia === "function" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const behavior = reduced ? "auto" : "smooth";
     let cancelled = false;
     let tries = 0;
     const paint = () => {
@@ -155,7 +188,14 @@ export function TourProvider({
       const el = document.querySelector(`[data-tour="${step.target}"]`);
       if (el) {
         el.classList.add("tour-spotlight");
-        el.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+        if (window.innerWidth < 640) {
+          const panel = document.getElementById("coach-panel");
+          const panelH = panel ? panel.getBoundingClientRect().height : 0;
+          const y = el.getBoundingClientRect().top + window.scrollY - panelH - 48;
+          window.scrollTo({ top: Math.max(0, y), behavior });
+        } else {
+          el.scrollIntoView({ block: "nearest", behavior });
+        }
       } else if (tries < 3) {
         tries += 1;
         window.setTimeout(paint, 350);
@@ -168,6 +208,7 @@ export function TourProvider({
   }, [track, index, step]);
 
   const start = useCallback((t: Track) => {
+    setPinned({});
     setTrack(t);
     setIndex(0);
     setCleanView(false);
@@ -299,10 +340,17 @@ function TrackPicker() {
 function CoachPanel() {
   const { track, index, steps, step, ctx, cleanView, setCleanView, next, back, exit, resetDemo } =
     useTour();
+  // Q4 follow-up: phones get the compact core; Notes/Clean/Reset live behind
+  // the More toggle. Reset per step so every step starts compact.
+  const [moreOpen, setMoreOpen] = useState(false);
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [index]);
   if (!step) return null;
   const last = index >= steps.length - 1;
   return (
     <div
+      id="coach-panel"
       role="region"
       aria-label="Presenter coach"
       className="fixed inset-x-3 bottom-3 z-50 sm:left-auto sm:right-4 sm:top-24 sm:bottom-auto sm:w-96"
@@ -338,32 +386,41 @@ function CoachPanel() {
           >
             Exit
           </button>
-        </div>
-        {!cleanView && (
-          <details className="mt-3 rounded-lg bg-white/[0.03] p-3 ring-1 ring-white/5">
-            <summary className="cursor-pointer font-mono text-xs font-medium text-slate-300">
-              Notes
-            </summary>
-            <p className="mt-2 text-sm leading-relaxed text-slate-400">{step.notes}</p>
-          </details>
-        )}
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-3">
-          <label className="flex min-h-[44px] cursor-pointer items-center gap-2 font-mono text-xs text-slate-300">
-            <input
-              type="checkbox"
-              checked={cleanView}
-              onChange={(e) => setCleanView(e.target.checked)}
-              className="h-5 w-5 accent-cyan-400"
-            />
-            Clean view
-          </label>
           <button
-            onClick={resetDemo}
-            className="flex min-h-[44px] items-center font-mono text-xs text-slate-400 hover:text-rose-300"
-            title="Clear the watchlist, dispositions and the tour"
+            onClick={() => setMoreOpen((o) => !o)}
+            aria-expanded={moreOpen}
+            className="flex min-h-[44px] items-center rounded-md px-4 py-2 font-mono text-sm text-cyan-300 hover:underline sm:hidden"
           >
-            Reset demo state
+            More
           </button>
+        </div>
+        <div className={moreOpen ? "" : "hidden sm:block"}>
+          {!cleanView && (
+            <details className="mt-3 rounded-lg bg-white/[0.03] p-3 ring-1 ring-white/5">
+              <summary className="cursor-pointer font-mono text-xs font-medium text-slate-300">
+                Notes
+              </summary>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">{step.notes}</p>
+            </details>
+          )}
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-3">
+            <label className="flex min-h-[44px] cursor-pointer items-center gap-2 font-mono text-xs text-slate-300">
+              <input
+                type="checkbox"
+                checked={cleanView}
+                onChange={(e) => setCleanView(e.target.checked)}
+                className="h-5 w-5 accent-cyan-400"
+              />
+              Clean view
+            </label>
+            <button
+              onClick={resetDemo}
+              className="flex min-h-[44px] items-center font-mono text-xs text-slate-400 hover:text-rose-300"
+              title="Clear the watchlist, dispositions and the tour"
+            >
+              Reset demo state
+            </button>
+          </div>
         </div>
       </div>
     </div>

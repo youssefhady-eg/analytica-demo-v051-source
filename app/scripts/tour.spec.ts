@@ -83,7 +83,9 @@ test("vondera track end-to-end on file://", async ({ page }) => {
   await page.keyboard.press("ArrowRight");
   await stepTo(page, 9);
   await expect(page.getByText("Ask questions in plain words")).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
+  // Phase 5: the step opens the real Ask drawer.
+  await expect(page.getByRole("dialog", { name: "Ask Vondera" })).toBeVisible();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
 
   // 10 reset returns the initial state.
   await stepTo(page, 10);
@@ -141,8 +143,14 @@ test("tour works at 360px", async ({ page }) => {
   await page.goto(INDEX_URL);
   await startTrack(page, "Vondera track");
   await stepTo(page, 1);
+  // Q4 follow-up: compact core with the extras behind More.
+  await expect(page.getByRole("button", { name: "More" })).toBeVisible();
+  await expect(page.getByText("Product thesis:").first()).toBeHidden();
+  await page.getByRole("button", { name: "More" }).click();
+  await page.getByText("Notes").click();
+  await expect(page.getByText("Product thesis:").first()).toBeVisible();
   for (let n = 2; n <= 6; n++) {
-    await page.getByRole("button", { name: "Next" }).click();
+    await page.getByRole("button", { name: "Next", exact: true }).click();
     await stepTo(page, n);
   }
   await expect(page.getByRole("heading", { name: "Did it work?" })).toBeVisible();
@@ -151,5 +159,30 @@ test("tour works at 360px", async ({ page }) => {
     iw: window.innerWidth,
   }));
   expect(over.sw).toBeLessThanOrEqual(over.iw);
+  expectClean(bag);
+});
+
+test("revisits reuse the pinned case on file://", async ({ page }) => {
+  const bag = watchErrors(page);
+  await page.goto(INDEX_URL);
+  await startTrack(page, "Vondera track");
+  const nextExact = page.getByRole("button", { name: "Next", exact: true });
+  const backExact = page.getByRole("button", { name: "Back", exact: true });
+  for (let n = 2; n <= 6; n++) {
+    await nextExact.click();
+    await stepTo(page, n);
+  }
+  // Step 6 approved the pinned top case exactly once.
+  await expect(page.getByRole("heading", { name: "Did it work?" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Verify (1)", exact: true })).toBeVisible();
+  // Back to the peel step and forward again: the pinned case re-opens and
+  // the approve is a no-op — still exactly one watched case.
+  await backExact.click();
+  await stepTo(page, 5);
+  await expect(page.getByText("Peel the next layer")).toHaveCount(0);
+  await nextExact.click();
+  await stepTo(page, 6);
+  await expect(page.getByRole("heading", { name: "Did it work?" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Verify (1)", exact: true })).toBeVisible();
   expectClean(bag);
 });

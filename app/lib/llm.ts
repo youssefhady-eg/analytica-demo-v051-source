@@ -58,6 +58,61 @@ export async function analystDiagnose(
 export const DEFAULT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 export const DEFAULT_MODEL = "gpt-4o-mini";
 
+/** Phase 5 — governed metrics bundle for the Ask panel. Computed aggregates
+ *  only (headlines, case list, decision counts) — never raw rows. */
+export interface AskBundle {
+  headlines: { spend_egp: number; platform_roas: number; true_poas: number; overstatement: number };
+  cases: { title: string; kind: string; impact_egp_monthly: number | null }[];
+  watchlist_titles: string[];
+  snoozed_count: number;
+  resolved_count: number;
+  human_overrides: { case_kind: string; case_title: string }[];
+}
+
+const ASK_SYSTEM = `You are the AI Analyst inside Analytica, answering a performance marketer's plain-words question from GOVERNED metrics only.
+Rules you must obey:
+- Answer in 2-4 plain sentences, casual register, no jargon, no buzzwords.
+- Use ONLY the numbers in the provided data. Never invent, estimate, or round figures beyond what is given. If the answer is not in the data, say you cannot answer from the metrics on screen.
+- You recommend only. Never claim to take, have taken, or be able to take any action (no pausing, launching, executing, or "done" claims).
+- Do not mention COD, cash on delivery, or anything outside the provided data.
+- Do not claim live monitoring, predictions, or certainty you don't have.`;
+
+/** Live (Level 2) answer for an Ask-panel question. Same governance as
+ *  narration: bundle in, verbalization out. Throws so callers fall back. */
+export async function analystAsk(
+  question: string,
+  bundle: AskBundle,
+  opts: LlmOpts
+): Promise<string> {
+  const res = await fetch(opts.endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${opts.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: opts.model,
+      temperature: 0.3,
+      max_tokens: 300,
+      messages: [
+        { role: "system", content: ASK_SYSTEM },
+        {
+          role: "user",
+          content: `Question: ${question}\n\nData (JSON):\n${JSON.stringify(bundle, null, 2)}`,
+        },
+      ],
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`LLM request failed (${res.status}): ${body.slice(0, 120)}`);
+  }
+  const json = await res.json();
+  const text: string | undefined = json?.choices?.[0]?.message?.content;
+  if (!text) throw new Error("LLM returned no text.");
+  return text.trim();
+}
+
 const NARRATE_SYSTEM = `You are the AI Analyst inside Analytica, narrating an investigation to a performance marketer as you work the case together.
 Rules you must obey:
 - First person, 1-2 plain sentences, casual register, no jargon, no buzzwords.
