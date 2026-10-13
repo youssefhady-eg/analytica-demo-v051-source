@@ -54,6 +54,18 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Node `^22.12.0`; the previous `>= 20` floor was only tolerated as an npm
   `EBADENGINE` warning. `engines.node`, `app/.nvmrc` and the CI
   `actions/setup-node` version are now `>= 22` / `22`.
+- Added `coverage/` to `app/.prettierignore` so generated v8 HTML
+  reports are not scanned by Prettier.
+
+### Security
+
+- Cleared all three **critical** advisories and every Next.js advisory.
+  The Tailwind 3 → 4 migration removed the advisory reachable through
+  Tailwind, taking `npm audit` from 7 high to 5 high. The remaining 5 are
+  the single `braces` stack-exhaustion DoS (GHSA-vfj7-8cjw-p6xm), which
+  has no patched release and reaches the tree only through
+  `eslint-config-next` → `@next/eslint-plugin-next` → `fast-glob` →
+  `micromatch` at build time — a deliberate follow-up, not an oversight.
 
 ## [0.1.0]
 

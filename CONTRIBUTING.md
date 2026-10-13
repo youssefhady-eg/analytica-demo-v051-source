@@ -11,7 +11,9 @@ npm ci
 npx playwright install chromium   # only needed for the browser checks
 ```
 
-Node 18.17+ is required (see `app/.nvmrc`, pinned to 20).
+Node 22+ is required — Vitest 5 and its `vite` dependency both require
+`^22.12.0`. `app/.nvmrc` pins 22 and `app/package.json` declares
+`engines.node >= 22`.
 
 ## Before you open a PR
 
