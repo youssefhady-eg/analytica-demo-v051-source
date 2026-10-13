@@ -42,7 +42,7 @@ npm test          # Vitest unit (cases, ask engine, csv hardening)
 analytica-demo-v051-source/
   BUILD_SPEC.md                        # product spec + v06 addendum (§10)
   OPENCODE_BUILD_BRIEF.md              # phase briefs v05.1 → v06
-  analytica-ux-wireframes-v0X.html     # v01 as-drawn, v02 as-built + mobile
+  analytica-ux-wireframes-v01.html     # as-drawn wireframes
   app/                                 # Next.js project root (run commands here)
     app/  components/  lib/  data/     # views, providers, engines, sample JSON
     scripts/                           # verify:* + *.spec.ts + fixtures/

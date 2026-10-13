@@ -105,6 +105,9 @@ export async function computeFromCsv(
         const n = (seenOrderIds.get(oid) ?? 0) + 1;
         seenOrderIds.set(oid, n);
         if (n === 2 && dupExamples.length < MAX_ROW_PROBLEMS) dupExamples.push(oid);
+        // P6-05 says "first occurrence counted" — actually skip repeats so
+        // profit, order counts and economics are not double-counted.
+        if (n > 1) continue;
       }
       const st = (o["courier_status"] ?? "").trim().toLowerCase();
       if (!STATUSES.has(st)) {

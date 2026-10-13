@@ -126,7 +126,13 @@ def main():
     profit_by_adset, profit_by_ad, delivered_values = {}, {}, []
     econ_by_adset = {}
     has_linkage = False
+    seen_order_ids = set()
     for o in orders:
+        oid = (o.get("order_id") or "").strip()
+        if oid:
+            if oid in seen_order_ids:
+                continue  # duplicate order_id — first occurrence counted
+            seen_order_ids.add(oid)
         st = o["courier_status"].strip().lower()
         if st not in STATUSES:
             errors.append(f"orders.csv: unknown courier_status '{o['courier_status']}' "

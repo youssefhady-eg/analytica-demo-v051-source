@@ -10,5 +10,11 @@ export default defineConfig({
   },
   test: {
     include: ["lib/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html", "lcov"],
+      include: ["lib/**/*.ts"],
+      exclude: ["lib/**/*.test.ts", "lib/types.ts", "lib/data.ts"],
+    },
   },
 });

@@ -1,0 +1,7 @@
+order_id,adset_id,order_value_egp,courier_status,cogs_egp,shipping_cost_egp
+o01,p1,800,delivered,300,60
+o02,p1,800,delivered,300,60
+o02,p1,800,delivered,300,60
+o03,p1,800,refused,300,60
+o04,p2,800,delivered,200,60
+o05,p2,800,delivered,200,60
