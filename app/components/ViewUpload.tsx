@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, Text, Title, Eyebrow } from "@/components/ui";
-import { parseCsv, type ParsedFile } from "@/lib/csv";
+import { parseCsv, parseCsvLarge, type ParsedFile } from "@/lib/csv";
 import { computeFromCsv } from "@/lib/compute";
+import { buildSampleCsvs, buildTemplateCsvs, downloadCsv, TEMPLATE_FILES } from "@/lib/templates";
+import { sampleData } from "@/lib/data";
 import { useDemoData } from "@/components/DataProvider";
 import { fmtEGP, fmtX } from "@/lib/format";
 import type { CsvTables, DemoData } from "@/lib/types";
@@ -25,6 +27,9 @@ function loadedSummary(d: DemoData): string {
   return `${d.brand.name}: ${fmtEGP(spend)} ad spend, platform ROAS ${fmtX(roas)}, true POAS ${fmtX(poas)} — the whole walkthrough now runs on these numbers.`;
 }
 
+/** Files above this size parse in chunks with progress (P6-06). */
+const CHUNKED_BYTES = 2 * 1024 * 1024;
+
 export default function ViewUpload({ onDone }: { onDone: () => void }) {
   const { setCsvData, data } = useDemoData();
   const [texts, setTexts] = useState<Partial<Record<keyof CsvTables, string>>>({});
@@ -34,9 +39,15 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
   const [rship, setRship] = useState("60");
   const [errors, setErrors] = useState<string[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
+  const [infos, setInfos] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
   // P1-05: per-file row counts live next to each slot — not in the warnings.
   const [counts, setCounts] = useState<Partial<Record<keyof CsvTables, number>>>({});
+  // P6-06: progress + cancellation for large exports.
+  const [progress, setProgress] = useState<{ phase: string; done: number; total: number } | null>(null);
+  const [running, setRunning] = useState(false);
+  const [wasCancelled, setWasCancelled] = useState(false);
+  const cancelRef = useRef(false);
 
   const onFile = (key: keyof CsvTables, file: File | undefined) => {
     if (!file) return;
@@ -45,44 +56,108 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
     reader.readAsText(file);
   };
 
-  const run = () => {
-    const errs: string[] = [];
-    const warns: string[] = [];
-    const tables = {} as CsvTables;
-    const parsed: Partial<Record<keyof CsvTables, number>> = {};
-    for (const f of FILES) {
-      const text = texts[f.key];
-      if (!text) {
-        if (f.required) errs.push(`${f.label} is required — attach the file.`);
-        tables[f.key] = [];
-        continue;
+  const run = async () => {
+    cancelRef.current = false;
+    setRunning(true);
+    setWasCancelled(false);
+    setProgress(null);
+    try {
+      const errs: string[] = [];
+      const warns: string[] = [];
+      const infs: string[] = [];
+      const tables = {} as CsvTables;
+      const rowNums: Partial<Record<keyof CsvTables, number[]>> = {};
+      const parsed: Partial<Record<keyof CsvTables, number>> = {};
+      for (const f of FILES) {
+        if (cancelRef.current) {
+          setWasCancelled(true);
+          setLoaded(false);
+          return;
+        }
+        const text = texts[f.key];
+        if (!text) {
+          if (f.required) errs.push(`${f.label} is required — attach the file.`);
+          tables[f.key] = [];
+          continue;
+        }
+        setProgress({ phase: `Parsing ${f.label}`, done: 0, total: 1 });
+        // eslint-disable-next-line no-await-in-loop
+        const pf: ParsedFile = text.length > CHUNKED_BYTES
+          ? await parseCsvLarge(
+              f.key,
+              text,
+              (frac) => setProgress({ phase: `Parsing ${f.label}`, done: frac, total: 1 }),
+              () => cancelRef.current
+            )
+          : parseCsv(f.key, text);
+        if (pf.cancelled || cancelRef.current) {
+          setWasCancelled(true);
+          setLoaded(false);
+          return;
+        }
+        errs.push(...pf.errors);
+        warns.push(...pf.warnings);
+        infs.push(...pf.infos);
+        if (pf.rows.length > 0) parsed[f.key] = pf.rows.length;
+        tables[f.key] = pf.rows;
+        rowNums[f.key] = pf.rowNums;
       }
-      const pf: ParsedFile = parseCsv(f.key, text);
-      errs.push(...pf.errors);
-      warns.push(...pf.warnings);
-      if (pf.rows.length > 0) parsed[f.key] = pf.rows.length;
-      tables[f.key] = pf.rows;
+      setCounts(parsed);
+      setInfos(infs);
+      if (errs.length > 0) {
+        setErrors(errs);
+        setWarnings(warns);
+        setLoaded(false);
+        return;
+      }
+      setProgress({ phase: "Computing profit, cases and headlines", done: 0, total: 1 });
+      // eslint-disable-next-line no-await-in-loop
+      const res = await computeFromCsv(
+        tables,
+        {
+          brand: brand.trim(),
+          cogs: parseFloat(cogs) || 0,
+          ship: parseFloat(ship) || 0,
+          rship: parseFloat(rship) || 0,
+        },
+        rowNums,
+        (done, total) => setProgress({ phase: "Computing profit, cases and headlines", done, total }),
+        () => cancelRef.current
+      );
+      if (res.cancelled || cancelRef.current) {
+        setWasCancelled(true);
+        setLoaded(false);
+        return;
+      }
+      setErrors(res.errors);
+      setWarnings([...warns, ...res.warnings]);
+      if (res.data) {
+        setCsvData(res.data);
+        setLoaded(true);
+      } else {
+        setLoaded(false);
+      }
+    } finally {
+      setRunning(false);
+      setProgress(null);
     }
-    setCounts(parsed);
-    if (errs.length > 0) {
-      setErrors(errs);
-      setWarnings(warns);
-      setLoaded(false);
-      return;
+  };
+
+  const downloadTemplates = async () => {
+    const t = buildTemplateCsvs(sampleData);
+    for (const { key, label } of TEMPLATE_FILES) {
+      downloadCsv(label, t[key]);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((r) => setTimeout(r, 150));
     }
-    const res = computeFromCsv(tables, {
-      brand: brand.trim(),
-      cogs: parseFloat(cogs) || 0,
-      ship: parseFloat(ship) || 0,
-      rship: parseFloat(rship) || 0,
-    });
-    setErrors(res.errors);
-    setWarnings([...warns, ...res.warnings]);
-    if (res.data) {
-      setCsvData(res.data);
-      setLoaded(true);
-    } else {
-      setLoaded(false);
+  };
+
+  const downloadSample = async () => {
+    const t = buildSampleCsvs(sampleData);
+    for (const { key, label } of TEMPLATE_FILES) {
+      downloadCsv(`sample-${label}`, t[key]);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((r) => setTimeout(r, 150));
     }
   };
 
@@ -192,22 +267,83 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         </Card>
       )}
 
-      <div className="flex gap-3">
+      {wasCancelled && (
+        <Card className="mb-6 border-white/15 bg-white/[0.03] p-5">
+          <Title>Compute cancelled</Title>
+          <Text className="mt-2">Nothing was loaded — your previous data is still showing.</Text>
+        </Card>
+      )}
+      {infos.length > 0 && errors.length === 0 && (
+        <Card className="mb-6 border-white/10 bg-white/[0.02] p-5">
+          <Title>File notes</Title>
+          <ul className="mt-2 list-disc space-y-1 pl-5 font-mono text-xs text-slate-400">
+            {infos.map((n, i) => <li key={i}>{n}</li>)}
+          </ul>
+        </Card>
+      )}
+
+      {progress && (
+        <Card className="mb-6 border-cyan-400/25 p-5">
+          <div className="flex items-center justify-between gap-3">
+            <Text className="font-mono text-xs">
+              {progress.phase} — {progress.total > 1 ? `${progress.done.toLocaleString()} / ${progress.total.toLocaleString()}` : "…"}
+            </Text>
+            <button
+              onClick={() => {
+                cancelRef.current = true;
+              }}
+              className="flex min-h-[44px] shrink-0 items-center rounded-md border border-white/15 px-4 py-2 font-mono text-xs text-slate-300 hover:bg-white/5"
+            >
+              Cancel
+            </button>
+          </div>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-cyan-400 transition-[width]"
+              style={{ width: `${progress.total > 1 ? Math.min(100, (progress.done / progress.total) * 100) : 50}%` }}
+            />
+          </div>
+        </Card>
+      )}
+
+      <div className="flex flex-wrap gap-3">
         <button
-          onClick={run}
-          className="rounded-lg bg-emerald-400 px-6 py-3 font-mono text-base font-bold text-slate-950 hover:bg-emerald-300"
+          onClick={() => void run()}
+          disabled={running}
+          className="rounded-lg bg-emerald-400 px-6 py-3 font-mono text-base font-bold text-slate-950 hover:bg-emerald-300 disabled:opacity-50 min-h-[44px]"
         >
           Compute & load into demo →
         </button>
-        {loaded && (
+        {!running && loaded && (
           <button
             onClick={onDone}
-            className="rounded-lg bg-cyan-400 px-6 py-3 font-mono text-base font-bold text-slate-950 hover:bg-cyan-300"
+            className="rounded-lg bg-cyan-400 px-6 py-3 font-mono text-base font-bold text-slate-950 hover:bg-cyan-300 min-h-[44px]"
           >
             Walk through {data.brand.name} →
           </button>
         )}
       </div>
+
+      <Card className="mb-6 mt-6 p-5">
+        <Title>Templates & sample export</Title>
+        <Text className="mt-2">
+          Start from headers that always load — or grab the full fictional dataset to round-trip the demo.
+        </Text>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            onClick={() => void downloadTemplates()}
+            className="flex min-h-[44px] items-center rounded-md border border-white/15 px-4 py-2 font-mono text-sm text-slate-200 hover:bg-white/5"
+          >
+            Download template CSVs
+          </button>
+          <button
+            onClick={() => void downloadSample()}
+            className="flex min-h-[44px] items-center rounded-md border border-white/15 px-4 py-2 font-mono text-sm text-slate-200 hover:bg-white/5"
+          >
+            Download sample as CSVs
+          </button>
+        </div>
+      </Card>
       <p className="mt-4 font-mono text-xs text-slate-400">
         Currently showing: {data.source === "csv" ? `merchant data (${data.brand.name})` : "the fictional sample"}. Switch back anytime from the badge, top right.
       </p>

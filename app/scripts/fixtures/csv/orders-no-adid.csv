@@ -1,0 +1,3 @@
+order_id,adset_id,order_value_egp,courier_status
+o01,p1,800,delivered
+o02,p2,800,delivered

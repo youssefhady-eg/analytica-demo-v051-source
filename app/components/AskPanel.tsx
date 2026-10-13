@@ -20,6 +20,36 @@ interface Message {
   thinking: boolean;
 }
 
+/** Governed bundle for one live call — the exact object analystAsk sends. */
+function buildBundle(
+  data: ReturnType<typeof useDemoData>["data"],
+  snapshot: ReturnType<typeof snapshotAsk>
+): AskBundle {
+  const spend = data.adsets.reduce((x, a) => x + a.spend_egp, 0);
+  const profit = data.adsets.reduce((x, a) => x + a.profit_egp, 0);
+  const roas = spend ? data.adsets.reduce((x, a) => x + a.platform_roas * a.spend_egp, 0) / spend : 0;
+  const poas = spend ? profit / spend : 0;
+  return {
+    headlines: {
+      spend_egp: spend,
+      platform_roas: roas,
+      true_poas: poas,
+      overstatement: poas ? roas / poas : 0,
+    },
+    cases: buildCases(data).map((c) => ({
+      title: c.title,
+      kind: c.kind,
+      impact_egp_monthly: c.impactEgp,
+    })),
+    watchlist_titles: snapshot.watched.map((c) => c.title),
+    snoozed_count: snapshot.snoozedCount,
+    resolved_count: snapshot.resolvedCount,
+    human_overrides: snapshot.handled
+      .filter((x) => x.kind === "override")
+      .map((x) => ({ case_kind: x.kind, case_title: x.title })),
+  };
+}
+
 /** Phase 5 — Ask Vondera panel (mock, rules-driven). A conversational layer
  *  over governed computed metrics: deterministic answers by default, live
  *  re-verbalization behind the BYOK toggle, visible fallback on any failure.
@@ -78,34 +108,7 @@ export default function AskPanel({
     setMessages((m) => [...m, { q, a: null, live: false, liveFailed: null, thinking: true }]);
     setBusy(true);
     try {
-      const h = {
-        spend: data.adsets.reduce((x, a) => x + a.spend_egp, 0),
-        profit: data.adsets.reduce((x, a) => x + a.profit_egp, 0),
-      };
-      const roas = h.spend
-        ? data.adsets.reduce((x, a) => x + a.platform_roas * a.spend_egp, 0) / h.spend
-        : 0;
-      const poas = h.spend ? h.profit / h.spend : 0;
-      const bundle: AskBundle = {
-        headlines: {
-          spend_egp: h.spend,
-          platform_roas: roas,
-          true_poas: poas,
-          overstatement: poas ? roas / poas : 0,
-        },
-        cases: buildCases(data).map((c) => ({
-          title: c.title,
-          kind: c.kind,
-          impact_egp_monthly: c.impactEgp,
-        })),
-        watchlist_titles: snapshot.watched.map((c) => c.title),
-        snoozed_count: snapshot.snoozedCount,
-        resolved_count: snapshot.resolvedCount,
-        human_overrides: snapshot.handled
-          .filter((x) => x.kind === "override")
-          .map((x) => ({ case_kind: x.kind, case_title: x.title })),
-      };
-      const text = await analystAsk(q, bundle, { apiKey, endpoint, model });
+      const text = await analystAsk(q, buildBundle(data, snapshot), { apiKey, endpoint, model });
       setMessages((m) =>
         m.map((msg, i) =>
           i === id
@@ -166,6 +169,22 @@ export default function AskPanel({
             demo · answers from computed metrics
           </span>
         </p>
+
+        {/* Live mode is unverified in this build — show exactly what the
+            first live call would send, before anything leaves the browser. */}
+        {enabled && apiKey && (
+          <details className="mb-4 rounded-lg bg-white/[0.03] p-3 ring-1 ring-white/5">
+            <summary className="cursor-pointer font-mono text-xs font-medium text-slate-300">
+              What live mode sends
+            </summary>
+            <p className="mt-2 text-sm text-slate-400">
+              Computed metrics only — headlines, case titles, counts. Never raw rows.
+            </p>
+            <pre className="mt-2 overflow-x-auto rounded-md bg-black/30 p-2 font-mono text-xs text-slate-300">
+              {JSON.stringify(buildBundle(data, snapshot), null, 2)}
+            </pre>
+          </details>
+        )}
 
         {messages.length === 0 && (
           <div className="mb-4">

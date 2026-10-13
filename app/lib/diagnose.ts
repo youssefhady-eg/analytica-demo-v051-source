@@ -27,6 +27,10 @@ export interface RoasCase {
 const avg = (rows: DailyRow[], k: keyof DailyRow): number =>
   rows.reduce((s, r) => s + (r[k] as number), 0) / Math.max(1, rows.length);
 
+/** ROAS-drop trigger — first-half vs second-half decline at or above this
+ *  percent. Single source so UI copy can't drift from logic. */
+export const ROAS_DROP_MIN_PCT = 10;
+
 /** RULES: scan daily series for the sharpest ROAS decline. Null when nothing
  *  dropped ≥10% — the frame then shows its honest empty state. */
 export function detectRoasDrop(data: DemoData): RoasCase | null {
@@ -44,7 +48,7 @@ export function detectRoasDrop(data: DemoData): RoasCase | null {
     const rNow = avg(lastH, "platform_roas");
     if (rThen <= 0) continue;
     const dropPct = (1 - rNow / rThen) * 100;
-    if (dropPct >= 10 && (!best || dropPct > best.dropPct)) {
+    if (dropPct >= ROAS_DROP_MIN_PCT && (!best || dropPct > best.dropPct)) {
       const adList = data.ads.filter(
         (a): a is LinkedAd => a.adset_id === adset.id && a.poas !== null && a.profit_egp !== null
       );

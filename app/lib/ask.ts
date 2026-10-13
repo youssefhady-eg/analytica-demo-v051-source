@@ -3,10 +3,12 @@ import {
   casePlan,
   getCase,
   waitingCases,
+  MONEY_MAX_POAS,
+  MONEY_MIN_ROAS,
   type CaseItem,
   type DispositionStatus,
 } from "./cases";
-import { detectRoasDrop } from "./diagnose";
+import { detectRoasDrop, ROAS_DROP_MIN_PCT } from "./diagnose";
 import { channelLabel, computeLeaks, stepLabel } from "./funnel";
 import { fmtEGP, fmtPct, fmtX } from "./format";
 import type { DemoData } from "./types";
@@ -122,7 +124,7 @@ function headlines(s: AskSnapshot): { spend: number; roas: number; poas: number;
 
 function moneyOffenders(s: AskSnapshot) {
   return [...s.data.adsets]
-    .filter((a) => a.platform_roas >= 2.5 && a.true_poas < 1.0)
+    .filter((a) => a.platform_roas >= MONEY_MIN_ROAS && a.true_poas < MONEY_MAX_POAS)
     .sort((a, b) => b.spend_egp - a.spend_egp);
 }
 
@@ -207,7 +209,7 @@ export function answerAsk(s: AskSnapshot, question: string): AskAnswer {
       if (offenders.length === 0) {
         return {
           intent,
-          text: "No ad set reports 2.5× or more while earning under 1× — nothing is hiding behind a pretty ROAS right now.",
+          text: `No ad set reports ${MONEY_MIN_ROAS.toFixed(1)}× or more while earning under ${MONEY_MAX_POAS}× — nothing is hiding behind a pretty ROAS right now.`,
           answeredFrom: ["ad-set economics · platform ROAS vs true POAS"],
           followUp: ["What's my real ROAS?", "Where should I focus?"],
           caseId: null,
@@ -264,7 +266,7 @@ export function answerAsk(s: AskSnapshot, question: string): AskAnswer {
         return {
           intent,
           text: s.data.hasDaily
-            ? "No sharp ROAS drop in the daily scan — nothing fell 10% or more."
+            ? `No sharp ROAS drop in the daily scan — nothing fell ${ROAS_DROP_MIN_PCT}% or more.`
             : "Daily data isn't loaded, so I can't scan for drops. Load daily_adset.csv and ask me again.",
           answeredFrom: [s.data.hasDaily ? "daily scan · first-half vs second-half" : "daily_adset.csv (missing)"],
           followUp: ["Where should I focus?"],

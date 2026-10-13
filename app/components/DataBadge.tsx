@@ -9,7 +9,7 @@ export default function DataBadge() {
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`rounded-full px-3 py-1 font-mono text-xs font-semibold ring-1 ${
+        className={`hidden rounded-full px-3 py-1 font-mono text-xs font-semibold ring-1 sm:block ${
           isCsv
             ? "bg-emerald-400/10 text-emerald-300 ring-emerald-400/30"
             : "bg-amber-400/10 text-amber-300 ring-amber-400/30"
@@ -21,6 +21,21 @@ export default function DataBadge() {
         }
       >
         {isCsv ? `YOUR DATA — ${data.brand.name}` : "SAMPLE DATA — fictional brand"}
+      </div>
+      {/* Short badges for phones (full text from sm up). */}
+      <div
+        className={`rounded-full px-3 py-1 font-mono text-xs font-semibold ring-1 sm:hidden ${
+          isCsv
+            ? "bg-emerald-400/10 text-emerald-300 ring-emerald-400/30"
+            : "bg-amber-400/10 text-amber-300 ring-amber-400/30"
+        }`}
+        title={
+          isCsv
+            ? "Figures computed from your uploaded CSVs in this browser — nothing left your machine"
+            : "All figures are fictional — generated for demo purposes"
+        }
+      >
+        {isCsv ? "YOUR DATA" : "SAMPLE DATA"}
       </div>
       {isCsv && (
         <button

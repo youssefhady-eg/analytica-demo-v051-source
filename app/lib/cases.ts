@@ -7,6 +7,11 @@ export type CaseKind = "roas-drop" | "funnel-leak" | "money-offender";
 
 export type CaseSource = "detected" | "submitted";
 
+/** Money-offender filter thresholds — the "looks profitable but loses money"
+ *  definition. Single source so UI copy (Ask panel) can't drift from logic. */
+export const MONEY_MIN_ROAS = 2.5;
+export const MONEY_MAX_POAS = 1.0;
+
 export interface CaseItem {
   id: string;
   kind: CaseKind;
@@ -41,7 +46,7 @@ export function buildCases(data: DemoData): CaseItem[] {
   }
 
   for (const a of data.adsets
-    .filter((x) => x.platform_roas >= 2.5 && x.true_poas < 1.0)
+    .filter((x) => x.platform_roas >= MONEY_MIN_ROAS && x.true_poas < MONEY_MAX_POAS)
     .sort((x, y) => y.spend_egp - x.spend_egp)) {
     const submitted = data.source === "sample" && /tiktok.*prospecting/i.test(a.name);
     cases.push({
