@@ -14,6 +14,7 @@ import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import {
   parseCsv,
+  parseCsvLarge,
   parseDateValue,
   parseNumValue,
   type CsvTables,
@@ -178,6 +179,22 @@ describe("fixture behaviors (P6-01…P6-05)", () => {
     expect(w).toContain("zero or negative value");
   });
 
+  test("duplicate order_id is counted once (first occurrence)", async () => {
+    const spend = parseCsv("spend", read("spend-clean.csv"));
+    const orders = parseCsv("orders", read("orders-duplicates.csv"));
+    const res = await computeFromCsv(
+      { spend: spend.rows, orders: orders.rows, ads: [], daily: [], funnel: [] },
+      { brand: "Fixture", cogs: 0, ship: 60, rship: 60 }
+    );
+    expect(res.data).not.toBeNull();
+    expect(res.warnings.join("\n")).toContain("duplicate order_id");
+    const p1 = res.data!.adsets.find((a) => a.id === "p1")!;
+    // o01 delivered (440) + o02 delivered (440) + o03 refused (−60); the
+    // repeated o02 row is skipped, so it must not add another 440.
+    expect(p1.profit_egp).toBeCloseTo(820, 6);
+    expect(p1.orders).toBe(3);
+  });
+
   test("missing ad_id linkage warns honestly", async () => {
     const { t } = tables("spend-clean.csv", "orders-no-adid.csv");
     const withAds: CsvTables = {
@@ -271,6 +288,59 @@ describe("round-trip (P6-08)", () => {
   });
 });
 
+describe("parseCsvLarge (chunked path)", () => {
+  test("parses a clean file with the same contract as the sync path", async () => {
+    const pf = await parseCsvLarge("spend", read("spend-clean.csv"));
+    expect(pf.cancelled).toBeFalsy();
+    expect(pf.errors).toEqual([]);
+    expect(pf.rows).toHaveLength(2);
+    expect(pf.rows[0]["adset_id"]).toBe("p1");
+    expect(pf.rows[0]["spend_egp"]).toBe("10000");
+  });
+
+  test("detects a semicolon delimiter", async () => {
+    const pf = await parseCsvLarge("spend", read("spend-semicolon.csv"));
+    expect(pf.errors).toEqual([]);
+    expect(pf.rows.length).toBeGreaterThan(0);
+    expect(pf.infos.join("\n")).toContain("delimiter");
+  });
+
+  test("reports an unreadable numeric value with file+row", async () => {
+    const csv = "date,channel,step,count\n2024-01-01,meta,session,abc\n";
+    const pf = await parseCsvLarge("funnel", csv);
+    expect(pf.errors.join("\n")).toMatch(/count has an unreadable value 'abc'/);
+  });
+
+  test("normalizes dates and rejects unsupported ones", async () => {
+    const csv = "date,channel,step,count\n01/02/2024,meta,session,10\n2024-13-40,meta,session,10\n";
+    const pf = await parseCsvLarge("funnel", csv);
+    expect(pf.rows[0]["date"]).toBe("2024-02-01");
+    expect(pf.errors.join("\n")).toMatch(/unsupported date '2024-13-40'/);
+  });
+
+  test("reports an empty file as no data rows", async () => {
+    const pf = await parseCsvLarge("spend", "adset_id,adset_name,channel,spend_egp,platform_roas\n");
+    expect(pf.rows).toHaveLength(0);
+    expect(pf.errors.join("\n")).toMatch(/no data rows found/i);
+  });
+
+  test("honors cancellation", async () => {
+    const pf = await parseCsvLarge("spend", read("spend-clean.csv"), undefined, () => true);
+    expect(pf.cancelled).toBe(true);
+    expect(pf.rows).toHaveLength(0);
+  });
+
+  test("reports progress fractions in [0,1]", async () => {
+    const seen: number[] = [];
+    await parseCsvLarge("spend", read("spend-clean.csv"), (f) => seen.push(f));
+    expect(seen.length).toBeGreaterThan(0);
+    for (const f of seen) {
+      expect(f).toBeGreaterThanOrEqual(0);
+      expect(f).toBeLessThanOrEqual(1);
+    }
+  });
+});
+
 describe("python parity (P6-08)", () => {
   test("compute.ts and ingest_csvs.py agree within 1e-6", async () => {
     // Windows exposes Python as `py`, not `python3` — try each spelling.
@@ -332,6 +402,70 @@ describe("python parity (P6-08)", () => {
       const tsPoas = tsProfit / tsSpend;
       expect(Math.abs(tsSpend - pySpend)).toBeLessThan(1e-6);
       expect(Math.abs(tsRoas - pyRoas)).toBeLessThan(1e-6);
+      expect(Math.abs(tsPoas - pyPoas)).toBeLessThan(1e-6);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }, 60000);
+
+  test("compute.ts and ingest_csvs.py dedupe order_id identically", async () => {
+    let python: string | null = null;
+    for (const cand of ["py", "python", "python3"]) {
+      try {
+        execFileSync(cand, ["--version"], { stdio: "ignore" });
+        python = cand;
+        break;
+      } catch {
+        // try the next spelling
+      }
+    }
+    if (!python) {
+      console.warn("SKIP parity: no Python available (tried py/python/python3)");
+      return;
+    }
+    const dir = mkdtempSync(join(tmpdir(), "analytica-parity-dup-"));
+    try {
+      writeFileSync(join(dir, "spend.csv"), read("spend-clean.csv"));
+      writeFileSync(join(dir, "orders.csv"), read("orders-duplicates.csv"));
+      const outdir = join(dir, "out");
+      execFileSync(
+        python,
+        [
+          join(__dirname, "..", "ingest_csvs.py"),
+          "--in",
+          dir,
+          "--out",
+          outdir,
+          "--brand",
+          "Parity",
+          "--cogs-default",
+          "0",
+          "--ship-default",
+          "60",
+          "--rship-default",
+          "60",
+        ],
+        { stdio: "pipe" }
+      );
+      const adsets = JSON.parse(readFileSync(join(outdir, "adsets.json"), "utf8")) as {
+        spend_egp: number;
+        profit_egp: number;
+      }[];
+      const pySpend = adsets.reduce((s, a) => s + a.spend_egp, 0);
+      const pyProfit = adsets.reduce((s, a) => s + a.profit_egp, 0);
+      const pyPoas = pyProfit / pySpend;
+
+      const spend = parseCsv("spend", read("spend-clean.csv"));
+      const orders = parseCsv("orders", read("orders-duplicates.csv"));
+      const res = await computeFromCsv(
+        { spend: spend.rows, orders: orders.rows, ads: [], daily: [], funnel: [] },
+        { brand: "Parity", cogs: 0, ship: 60, rship: 60 }
+      );
+      expect(res.data).not.toBeNull();
+      const tsSpend = res.data!.adsets.reduce((s, a) => s + a.spend_egp, 0);
+      const tsProfit = res.data!.adsets.reduce((s, a) => s + a.profit_egp, 0);
+      const tsPoas = tsProfit / tsSpend;
+      expect(Math.abs(tsProfit - pyProfit)).toBeLessThan(1e-6);
       expect(Math.abs(tsPoas - pyPoas)).toBeLessThan(1e-6);
     } finally {
       rmSync(dir, { recursive: true, force: true });

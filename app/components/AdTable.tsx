@@ -16,6 +16,10 @@ const FLAG_STYLE: Record<AdFlag, string> = {
 /** Per-creative profit table for one ad set — the level the marketer acts on. */
 export default function AdTable({ adsetId, onUpload }: { adsetId: string; onUpload?: () => void }) {
   const { data } = useDemoData();
+  // P3-05: the scroll hint shows until the marketer scrolls the table once.
+  // Must sit above the early returns below — a hook after a conditional
+  // return changes hook order when ads data loads.
+  const [scrolled, setScrolled] = useState(false);
 
   if (!data.hasAds) {
     return (
@@ -45,8 +49,6 @@ export default function AdTable({ adsetId, onUpload }: { adsetId: string; onUplo
   const cutoff = heroCutoff(adList);
   const conc = profitConcentration(adList);
   const rows = [...adList].sort((a, b) => b.profit_egp - a.profit_egp);
-  // P3-05: the scroll hint shows until the marketer scrolls the table once.
-  const [scrolled, setScrolled] = useState(false);
 
   return (
     <Card className="p-5">

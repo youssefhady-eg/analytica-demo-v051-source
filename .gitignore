@@ -2,6 +2,10 @@ node_modules/
 .next/
 out/
 test-results/
+playwright-report/
+coverage/
 devlog*
 .env
 .env*.local
+# TypeScript incremental build cache (machine-specific)
+*.tsbuildinfo

@@ -180,6 +180,11 @@ export default function AskPanel({
             <p className="mt-2 text-sm text-slate-400">
               Computed metrics only — headlines, case titles, counts. Never raw rows.
             </p>
+            <p className="mt-2 text-sm text-amber-300/90">
+              ⚠ Live mode is unverified in this build. Answers come from the model
+              you configured and are not checked against the rules engine — treat
+              them as narration, not as a source of new numbers.
+            </p>
             <pre className="mt-2 overflow-x-auto rounded-md bg-black/30 p-2 font-mono text-xs text-slate-300">
               {JSON.stringify(buildBundle(data, snapshot), null, 2)}
             </pre>
