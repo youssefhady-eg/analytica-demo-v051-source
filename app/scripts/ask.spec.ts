@@ -63,7 +63,9 @@ test("ask panel on file://", async ({ page }) => {
   const input = drawer.getByLabel("Ask about your numbers");
   await input.fill("tell me a joke about cats");
   await drawer.getByRole("button", { name: "Ask", exact: true }).click();
-  await expect(drawer.getByText("I can only answer from the metrics on screen. Try one of these:")).toBeVisible();
+  await expect(
+    drawer.getByText("I can only answer from the metrics on screen. Try one of these:")
+  ).toBeVisible();
   await input.fill("pause that ad");
   await drawer.getByRole("button", { name: "Ask", exact: true }).click();
   await expect(drawer.getByText(/I can recommend, but I don't take actions/)).toBeVisible();

@@ -173,7 +173,6 @@ export function TourProvider({
       return { ...raw, view: resolveView(raw.view, id) };
     }
     return raw;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track, index, steps, data, watchlist, dispositions, pinned]);
 
   // Spotlight: ring the target without touching layout; missing targets are
@@ -181,7 +180,9 @@ export function TourProvider({
   // Q4 follow-up: on phones the target scrolls ABOVE the bottom-sheet panel
   // so the panel never hides what it spotlights.
   useEffect(() => {
-    document.querySelectorAll(".tour-spotlight").forEach((el) => el.classList.remove("tour-spotlight"));
+    document
+      .querySelectorAll(".tour-spotlight")
+      .forEach((el) => el.classList.remove("tour-spotlight"));
     if (!track || !step?.target) return;
     const reduced =
       typeof window.matchMedia === "function" &&
@@ -223,14 +224,16 @@ export function TourProvider({
   const exit = useCallback(() => {
     setTrack(null);
     setIndex(0);
-    document.querySelectorAll(".tour-spotlight").forEach((el) => el.classList.remove("tour-spotlight"));
+    document
+      .querySelectorAll(".tour-spotlight")
+      .forEach((el) => el.classList.remove("tour-spotlight"));
   }, []);
   const next = useCallback(() => {
     setIndex((i) => {
       const n = trackSteps(track as Track).length;
       return i < n - 1 ? i + 1 : i;
     });
-  }, [track ]);
+  }, [track]);
   const back = useCallback(() => {
     setIndex((i) => (i > 0 ? i - 1 : i));
   }, []);
@@ -244,7 +247,8 @@ export function TourProvider({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT")) return;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT"))
+        return;
       if (pickerOpen) {
         if (e.key === "Escape") setPickerOpen(false);
         return;
@@ -278,7 +282,21 @@ export function TourProvider({
       hideDemoControls: active && cleanView,
       resetDemo,
     }),
-    [active, track, index, steps, step, ctx, cleanView, pickerOpen, start, exit, next, back, resetDemo]
+    [
+      active,
+      track,
+      index,
+      steps,
+      step,
+      ctx,
+      cleanView,
+      pickerOpen,
+      start,
+      exit,
+      next,
+      back,
+      resetDemo,
+    ]
   );
 
   return (
@@ -294,7 +312,10 @@ function TrackPicker() {
   const { setPickerOpen, start } = useTour();
   const close = () => setPickerOpen(false);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={close}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      onClick={close}
+    >
       <div
         role="dialog"
         aria-modal="true"
@@ -315,7 +336,9 @@ function TrackPicker() {
           >
             <span>
               <span className="block font-semibold text-slate-100">Vondera track</span>
-              <span className="block text-sm text-slate-400">Ecosystem, product thesis, honesty · ~6 min</span>
+              <span className="block text-sm text-slate-400">
+                Ecosystem, product thesis, honesty · ~6 min
+              </span>
             </span>
             <span className="font-mono text-cyan-300">→</span>
           </button>
@@ -325,7 +348,9 @@ function TrackPicker() {
           >
             <span>
               <span className="block font-semibold text-slate-100">Marketer track</span>
-              <span className="block text-sm text-slate-400">Workflow, investigation, your own data · ~6 min</span>
+              <span className="block text-sm text-slate-400">
+                Workflow, investigation, your own data · ~6 min
+              </span>
             </span>
             <span className="font-mono text-cyan-300">→</span>
           </button>

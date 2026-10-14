@@ -68,7 +68,15 @@ claim("overstatement is 2.92×", () => (roas / poas).toFixed(2) === "2.92");
 // --- Case table (§2 hit-list) ---
 claim("4 sample cases in §2 order", () => {
   const ids = buildCases(sampleData).map((c) => c.id);
-  return JSON.stringify(ids) === JSON.stringify(["leak-tiktok-3", "money-lookalike-purch", "money-tiktok-prosp", "drop-spring-broad"]);
+  return (
+    JSON.stringify(ids) ===
+    JSON.stringify([
+      "leak-tiktok-3",
+      "money-lookalike-purch",
+      "money-tiktok-prosp",
+      "drop-spring-broad",
+    ])
+  );
 });
 claim("rank 1 is the TikTok funnel leak worth 269,340", () => {
   const c = buildCases(sampleData)[0];
@@ -77,8 +85,10 @@ claim("rank 1 is the TikTok funnel leak worth 269,340", () => {
 claim("ranks 2–3 are money offenders with submitters", () => {
   const cases = buildCases(sampleData);
   return (
-    cases[1].kind === "money-offender" && cases[1].impactEgp === 24000 &&
-    cases[2].submittedBy?.includes("Sara") === true && cases[3].submittedBy?.includes("Ahmed") === true
+    cases[1].kind === "money-offender" &&
+    cases[1].impactEgp === 24000 &&
+    cases[2].submittedBy?.includes("Sara") === true &&
+    cases[3].submittedBy?.includes("Ahmed") === true
   );
 });
 claim("rank 4 is the unsized ROAS drop", () => {
@@ -102,13 +112,23 @@ claim("dismissed cases leave the list; resurfaced snoozes return", () => {
 // --- Detector status (P1-02) ---
 claim("all detectors run on the sample", () => {
   const st = detectorStatus(sampleData);
-  return st.roasDrop.status === "ran" && st.funnel.status === "ran" && st.adLinkage.status === "ran";
+  return (
+    st.roasDrop.status === "ran" && st.funnel.status === "ran" && st.adLinkage.status === "ran"
+  );
 });
 claim("missing funnel/daily skip with file reasons", () => {
-  const st = detectorStatus({ ...sampleData, funnel: [], hasFunnel: false, daily: [], hasDaily: false });
+  const st = detectorStatus({
+    ...sampleData,
+    funnel: [],
+    hasFunnel: false,
+    daily: [],
+    hasDaily: false,
+  });
   return (
-    st.funnel.status === "skipped" && (st.funnel.reason ?? "").includes("funnel.csv") &&
-    st.roasDrop.status === "skipped" && (st.roasDrop.reason ?? "").includes("daily_adset.csv")
+    st.funnel.status === "skipped" &&
+    (st.funnel.reason ?? "").includes("funnel.csv") &&
+    st.roasDrop.status === "skipped" &&
+    (st.roasDrop.reason ?? "").includes("daily_adset.csv")
   );
 });
 
@@ -156,39 +176,75 @@ claim("both tour tracks run 10 steps", () => {
 });
 claim("v-ask presents the built drawer, not a roadmap", () => {
   const s = trackSteps("vondera").find((x) => x.id === "v-ask");
-  return s !== undefined && s.openAsk === true && s.caption({} as never).includes("governed metrics");
+  return (
+    s !== undefined && s.openAsk === true && s.caption({} as never).includes("governed metrics")
+  );
 });
 
 // --- Built surfaces exist in source ---
 claim("dismiss chip row + reasons", () =>
-  has("components/ViewCase.tsx", "Why dismiss?", "Already handled", "Not now", "Disagree", "Cancel"));
+  has("components/ViewCase.tsx", "Why dismiss?", "Already handled", "Not now", "Disagree", "Cancel")
+);
 claim("decision pills", () =>
-  has("components/ViewCase.tsx", "RESOLVED", "SNOOZED", "OVERRIDE LOGGED", "PENDING APPROVAL", "APPROVED · WATCHING"));
+  has(
+    "components/ViewCase.tsx",
+    "RESOLVED",
+    "SNOOZED",
+    "OVERRIDE LOGGED",
+    "PENDING APPROVAL",
+    "APPROVED · WATCHING"
+  )
+);
 claim("handled log + resurface marker", () =>
-  has("components/ViewDetect.tsx", "Handled & snoozed", "Re-surfaced — worsened since snoozed", "Simulate worsening (demo)"));
+  has(
+    "components/ViewDetect.tsx",
+    "Handled & snoozed",
+    "Re-surfaced — worsened since snoozed",
+    "Simulate worsening (demo)"
+  )
+);
 claim("margin decomposition on Profit-lie Isolate", () =>
-  has("components/ViewCase.tsx", "Where the margin goes"));
+  has("components/ViewCase.tsx", "Where the margin goes")
+);
 claim("unsized impacts render without a figure", () =>
-  has("components/ViewDetect.tsx", "impact not sized"));
+  has("components/ViewDetect.tsx", "impact not sized")
+);
 claim("upload honesty titles + row counts", () =>
-  has("components/ViewUpload.tsx", "Couldn", "Loaded with notes", "rows"));
+  has("components/ViewUpload.tsx", "Couldn", "Loaded with notes", "rows")
+);
 claim("AI dialog: switch + disconnect, memory-only key", () =>
-  has("components/AiToggle.tsx", "Disconnect (clear key)", "never saved"));
+  has("components/AiToggle.tsx", "Disconnect (clear key)", "never saved")
+);
 claim("verify cards link back with confirm", () =>
-  has("components/ViewVerify.tsx", "Open case →", "Yes, stop"));
-claim("ask drawer with badge + provenance + fallback", () =>
-  has("components/AskPanel.tsx", "answers from computed metrics", "Answered from:") &&
-  has("lib/ask.ts", "I can only answer from the metrics on screen", "I can recommend, but I don't take actions"));
-claim("presenter entry + coach panel + reset", () =>
-  has("components/SiteNav.tsx", "Present") && has("components/TourProvider.tsx", "Presenter coach", "Reset demo state"));
-claim("spotlight ring without layout change", () =>
-  has("app/globals.css", ".tour-spotlight"));
-claim("mobile: sticky bar, compact stepper, stacked cards", () =>
-  has("components/ViewCase.tsx", "safe-area-inset-bottom") &&
-  has("components/Stepper.tsx", "Step ", "STAGES.length") &&
-  has("components/AdTable.tsx", "More numbers"));
+  has("components/ViewVerify.tsx", "Open case →", "Yes, stop")
+);
+claim(
+  "ask drawer with badge + provenance + fallback",
+  () =>
+    has("components/AskPanel.tsx", "answers from computed metrics", "Answered from:") &&
+    has(
+      "lib/ask.ts",
+      "I can only answer from the metrics on screen",
+      "I can recommend, but I don't take actions"
+    )
+);
+claim(
+  "presenter entry + coach panel + reset",
+  () =>
+    has("components/SiteNav.tsx", "Present") &&
+    has("components/TourProvider.tsx", "Presenter coach", "Reset demo state")
+);
+claim("spotlight ring without layout change", () => has("app/globals.css", ".tour-spotlight"));
+claim(
+  "mobile: sticky bar, compact stepper, stacked cards",
+  () =>
+    has("components/ViewCase.tsx", "safe-area-inset-bottom") &&
+    has("components/Stepper.tsx", "Step ", "STAGES.length") &&
+    has("components/AdTable.tsx", "More numbers")
+);
 claim("upload hardening surfaces", () =>
-  has("components/ViewUpload.tsx", "Download template CSVs", "File notes", "Compute cancelled"));
+  has("components/ViewUpload.tsx", "Download template CSVs", "File notes", "Compute cancelled")
+);
 claim("header aliases with TODO(real-export)", () => {
   return (
     has("lib/aliases.ts", "TODO(real-export)", "amount_spent") &&
@@ -214,8 +270,7 @@ for (const f of [
     } catch {
       return false;
     }
-  }
-  );
+  });
 }
 
 const total = pass + fail;

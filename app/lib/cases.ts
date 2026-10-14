@@ -62,7 +62,8 @@ export function buildCases(data: DemoData): CaseItem[] {
       ...(submitted
         ? {
             submittedBy: "Sara · performance marketer",
-            submitterNote: "Dashboard says 3.8× but finance says we're bleeding. What's the real number?",
+            submitterNote:
+              "Dashboard says 3.8× but finance says we're bleeding. What's the real number?",
           }
         : {}),
     });
@@ -94,7 +95,11 @@ export function buildCases(data: DemoData): CaseItem[] {
   const dropSeverity: Record<string, number> = {};
   if (rc) dropSeverity[`drop-${rc.adset.id}`] = rc.dropPct;
 
-  return cases.sort((a, b) => (b.impactEgp ?? 0) - (a.impactEgp ?? 0) || ((dropSeverity[b.id] ?? 0) - (dropSeverity[a.id] ?? 0)));
+  return cases.sort(
+    (a, b) =>
+      (b.impactEgp ?? 0) - (a.impactEgp ?? 0) ||
+      (dropSeverity[b.id] ?? 0) - (dropSeverity[a.id] ?? 0)
+  );
 }
 
 export function getCase(data: DemoData, id: string | null): CaseItem | null {
@@ -189,9 +194,7 @@ export interface DetectorStatus {
 export function detectorStatus(data: DemoData): DetectorStatus {
   const roasDrop: DetectorRun = !data.hasDaily
     ? { status: "skipped", reason: "daily_adset.csv not loaded" }
-    : data.daily.some(
-        (r) => data.daily.filter((x) => x.adset_id === r.adset_id).length >= 8
-      )
+    : data.daily.some((r) => data.daily.filter((x) => x.adset_id === r.adset_id).length >= 8)
       ? { status: "ran", reason: null }
       : { status: "skipped", reason: "daily_adset.csv has < 8 days" };
   const funnelDates = new Set(data.funnel.map((r) => r.date)).size;
@@ -297,30 +300,68 @@ export function casePlan(c: CaseItem, data: DemoData): PlanStep[] {
     const name = rc?.culprit ? rc.culprit.ad_name : "the culprit creative";
     const budget = rc?.culprit ? `${fmtEGP(rc.culprit.spend_egp)}/mo` : "its budget";
     return [
-      { title: "Pause the bleeder", detail: `Pause ${name} today — it drags the whole ad set.`, when: "today" },
-      { title: "Move the budget", detail: `Shift ${budget} to the ad set's top-profit creatives.`, when: "this week" },
-      { title: "Watch the baskets", detail: "Track AOV and failed-delivery rate for 7 days — the damage is post-click.", when: "7 days" },
+      {
+        title: "Pause the bleeder",
+        detail: `Pause ${name} today — it drags the whole ad set.`,
+        when: "today",
+      },
+      {
+        title: "Move the budget",
+        detail: `Shift ${budget} to the ad set's top-profit creatives.`,
+        when: "this week",
+      },
+      {
+        title: "Watch the baskets",
+        detail: "Track AOV and failed-delivery rate for 7 days — the damage is post-click.",
+        when: "7 days",
+      },
     ];
   }
   if (c.kind === "funnel-leak" && c.channel && c.stepIdx !== null) {
     const to = stepLabel(c.stepIdx);
     const from = stepLabel(c.stepIdx - 1);
     return [
-      { title: "Recover the volume now", detail: `Retargeting + WhatsApp nudge on the abandoned ${to.toLowerCase()} volume.`, when: "48h" },
-      { title: "Fix the cause", detail: "Take the checklist's top cause — trust signals and friction at the finish line.", when: "this week" },
-      { title: "Re-measure", detail: `Confirm the ${from} → ${to} rate recovers before scaling spend.`, when: "7 days" },
+      {
+        title: "Recover the volume now",
+        detail: `Retargeting + WhatsApp nudge on the abandoned ${to.toLowerCase()} volume.`,
+        when: "48h",
+      },
+      {
+        title: "Fix the cause",
+        detail: "Take the checklist's top cause — trust signals and friction at the finish line.",
+        when: "this week",
+      },
+      {
+        title: "Re-measure",
+        detail: `Confirm the ${from} → ${to} rate recovers before scaling spend.`,
+        when: "7 days",
+      },
     ];
   }
   const a = data.adsets.find((x) => x.id === c.adsetId);
   if (a) {
     const total = a.economics.revenue_egp || 1;
     return [
-      { title: "Stop the bleed", detail: `Cut ${a.name}'s ${fmtEGP(a.spend_egp)}/mo to zero — every pound loses money.`, when: "today" },
-      { title: "Fix the margin", detail: `COGS is ${fmtPct((a.economics.cogs_egp / total) * 100)} of revenue and failed deliveries burn ${fmtEGP(a.economics.failed_egp)}. Fix before spending again.`, when: "this week" },
-      { title: "Re-enter gated", detail: "Resume spend only when true POAS holds above 1.2×.", when: "gated" },
+      {
+        title: "Stop the bleed",
+        detail: `Cut ${a.name}'s ${fmtEGP(a.spend_egp)}/mo to zero — every pound loses money.`,
+        when: "today",
+      },
+      {
+        title: "Fix the margin",
+        detail: `COGS is ${fmtPct((a.economics.cogs_egp / total) * 100)} of revenue and failed deliveries burn ${fmtEGP(a.economics.failed_egp)}. Fix before spending again.`,
+        when: "this week",
+      },
+      {
+        title: "Re-enter gated",
+        detail: "Resume spend only when true POAS holds above 1.2×.",
+        when: "gated",
+      },
     ];
   }
-  return [{ title: "Pause spend", detail: "Pause spend until the margin is fixed.", when: "today" }];
+  return [
+    { title: "Pause spend", detail: "Pause spend until the margin is fixed.", when: "today" },
+  ];
 }
 
 export { STEPS };

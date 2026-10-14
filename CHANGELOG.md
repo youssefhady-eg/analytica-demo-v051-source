@@ -32,6 +32,8 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - ESLint (`next/core-web-vitals`), Prettier, and `.editorconfig`.
 - Coverage tooling: `npm run test:coverage` (v8, scoped to `lib/**`).
 - CI workflow (`.github/workflows/ci.yml`): test, lint, build and verify.
+- `format:check` added to the CI gate so Prettier drift is caught at review
+  time rather than accumulating.
 - Dependabot config and CODEOWNERS.
 - CONTRIBUTING.md and SECURITY.md.
 

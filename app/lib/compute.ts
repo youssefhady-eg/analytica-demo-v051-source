@@ -71,7 +71,10 @@ export async function computeFromCsv(
   const profitByAdset = new Map<string, number>();
   const profitByAd = new Map<string, number>();
   const ordersByAdset = new Map<string, number>();
-  const econByAdset = new Map<string, { revenue: number; cogs: number; ship: number; failed: number }>();
+  const econByAdset = new Map<
+    string,
+    { revenue: number; cogs: number; ship: number; failed: number }
+  >();
   const deliveredValues: number[] = [];
   const seenOrderIds = new Map<string, number>();
   let hasLinkage = false;
@@ -111,7 +114,9 @@ export async function computeFromCsv(
       }
       const st = (o["courier_status"] ?? "").trim().toLowerCase();
       if (!STATUSES.has(st)) {
-        badStatus.push(`orders.csv row ${line}: unknown courier_status '${o["courier_status"]}' (order ${o["order_id"]})`);
+        badStatus.push(
+          `orders.csv row ${line}: unknown courier_status '${o["courier_status"]}' (order ${o["order_id"]})`
+        );
         continue;
       }
       if (!adsetIds.has(o["adset_id"])) {
@@ -168,32 +173,38 @@ export async function computeFromCsv(
   if (dupGroups > 0) {
     warnings.push(
       `orders.csv: ${dupTotal} duplicate order_id value(s) across ${dupGroups} id(s)` +
-      (dupExamples.length > 0 ? ` (e.g. ${dupExamples.join(", ")})` : "") +
-      " — first occurrence counted"
+        (dupExamples.length > 0 ? ` (e.g. ${dupExamples.join(", ")})` : "") +
+        " — first occurrence counted"
     );
   }
   if (zeroValueOrders > 0) {
-    warnings.push(`orders.csv: ${zeroValueOrders} order(s) with zero or negative value — counted as-is`);
+    warnings.push(
+      `orders.csv: ${zeroValueOrders} order(s) with zero or negative value — counted as-is`
+    );
   }
   if (orphanOrders > 0) {
     const pct = t.orders.length > 0 ? (orphanOrders / t.orders.length) * 100 : 0;
     warnings.push(
       `orders.csv: ${orphanOrders} order(s) (${pct.toFixed(1)}%) reference unknown adset_id — skipped` +
-      (orphanExamples.length > 0 ? ` (e.g. ${orphanExamples.join(", ")})` : "")
+        (orphanExamples.length > 0 ? ` (e.g. ${orphanExamples.join(", ")})` : "")
     );
   }
   if (t.ads.length > 0 && countedOrders > 0) {
     const coverage = (linkedOrders / countedOrders) * 100;
     if (coverage < 100 && !hasLinkage) {
-      warnings.push("orders.csv has no ad_id column — per-ad profit unavailable; Frame 4 will show its locked state.");
+      warnings.push(
+        "orders.csv has no ad_id column — per-ad profit unavailable; Frame 4 will show its locked state."
+      );
     } else if (coverage < 80) {
       warnings.push(
         `orders.csv: ad_id coverage ${coverage.toFixed(0)}% — per-ad profit is partial; ` +
-        `${countedOrders - linkedOrders} order(s) excluded from per-ad profit`
+          `${countedOrders - linkedOrders} order(s) excluded from per-ad profit`
       );
     }
   } else if (t.ads.length > 0 && !hasLinkage) {
-    warnings.push("orders.csv has no ad_id column — per-ad profit unavailable; Frame 4 will show its locked state.");
+    warnings.push(
+      "orders.csv has no ad_id column — per-ad profit unavailable; Frame 4 will show its locked state."
+    );
   }
 
   const adsets: AdSet[] = t.spend.map((r) => {
@@ -262,13 +273,21 @@ export async function computeFromCsv(
       badStep.push(`funnel.csv row ${rowOf("funnel", i)}: unknown step '${r["step"]}'`);
       return;
     }
-    funnel.push({ date: r["date"], channel: r["channel"], step, count: Math.round(num(r["count"])) });
+    funnel.push({
+      date: r["date"],
+      channel: r["channel"],
+      step,
+      count: Math.round(num(r["count"])),
+    });
   });
   badStep.flush(errors, (n) => `funnel.csv: …and ${n} more unknown-step row(s)`);
   if (errors.length > 0) return { data: null, errors, warnings };
 
   const totalSpend = adsets.reduce((s, a) => s + a.spend_egp, 0);
-  const aov = deliveredValues.length > 0 ? deliveredValues.reduce((s, v) => s + v, 0) / deliveredValues.length : 0;
+  const aov =
+    deliveredValues.length > 0
+      ? deliveredValues.reduce((s, v) => s + v, 0) / deliveredValues.length
+      : 0;
 
   if (totalSpend === 0) {
     warnings.push("spend.csv totals ≈ EGP 0 — ROAS and POAS will read 0 until spend is fixed");
@@ -276,7 +295,9 @@ export async function computeFromCsv(
   if (t.funnel.length > 0) {
     const funnelDays = new Set(t.funnel.map((r) => r["date"])).size;
     if (funnelDays < 8) {
-      warnings.push(`funnel.csv has ${funnelDays} day(s) of data (< 8) — the leak scan stays skipped`);
+      warnings.push(
+        `funnel.csv has ${funnelDays} day(s) of data (< 8) — the leak scan stays skipped`
+      );
     }
   }
   if (t.daily.length > 0 && t.funnel.length > 0) {
@@ -287,7 +308,9 @@ export async function computeFromCsv(
       if (funnelDays.has(d)) overlap = true;
     });
     if (!overlap) {
-      warnings.push("daily_adset.csv and funnel.csv date ranges don't overlap — cross-checks compare different windows");
+      warnings.push(
+        "daily_adset.csv and funnel.csv date ranges don't overlap — cross-checks compare different windows"
+      );
     }
   }
 

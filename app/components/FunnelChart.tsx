@@ -7,7 +7,15 @@ import type { FunnelRow } from "@/lib/types";
 import { CHART_BASE_FONT, CHART_TITLE_FONT } from "@/lib/format";
 
 /** Funnel visualization for one channel — dark ops-room styling. */
-export default function FunnelChart({ funnel, channel, title }: { funnel: FunnelRow[]; channel: string; title: string }) {
+export default function FunnelChart({
+  funnel,
+  channel,
+  title,
+}: {
+  funnel: FunnelRow[];
+  channel: string;
+  title: string;
+}) {
   const totals: Record<string, number> = {};
   for (const r of funnel) {
     if (r.channel === channel) totals[r.step] = (totals[r.step] ?? 0) + r.count;
@@ -24,7 +32,11 @@ export default function FunnelChart({ funnel, channel, title }: { funnel: Funnel
   }, []);
   const option = {
     backgroundColor: "transparent",
-    title: { text: title, left: "center", textStyle: { fontSize: CHART_TITLE_FONT, color: "#e2e8f0" } },
+    title: {
+      text: title,
+      left: "center",
+      textStyle: { fontSize: CHART_TITLE_FONT, color: "#e2e8f0" },
+    },
     tooltip: {
       trigger: "item",
       formatter: "{b}: {c}",

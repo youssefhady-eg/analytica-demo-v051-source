@@ -21,10 +21,11 @@ Run the same gates CI runs:
 
 ```bash
 cd app
-npm test          # unit tests (vitest)
-npm run lint      # eslint
-npm run build     # static export must compile
-npm run verify    # static scan, invariants, file://, mobile, tour, ask, hardening, contrast
+npm test             # unit tests (vitest)
+npm run lint         # eslint
+npm run format:check # prettier
+npm run build        # static export must compile
+npm run verify       # static scan, invariants, file://, mobile, tour, ask, hardening, contrast
 ```
 
 `npm run verify` is the source of truth: it exercises the real app in a

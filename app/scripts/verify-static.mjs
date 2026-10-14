@@ -84,7 +84,11 @@ for (const d of ["components", "lib", "app"].map((x) => join(ROOT, x))) {
     if (!/\.(tsx?|jsx?)$/.test(f)) continue;
     const lines = readFileSync(f, "utf8").split("\n");
     lines.forEach((line, i) => {
-      if (line.includes("fetch(") && !line.trim().startsWith("//") && !line.trim().startsWith("*")) {
+      if (
+        line.includes("fetch(") &&
+        !line.trim().startsWith("//") &&
+        !line.trim().startsWith("*")
+      ) {
         fetchHits.push(`${relative(ROOT, f)}:${i + 1}`);
       }
     });

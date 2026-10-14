@@ -183,7 +183,9 @@ test("dismiss-reason flow on file://", async ({ page }) => {
   await expect(page.getByText("Why dismiss?")).toBeVisible();
   await page.getByRole("button", { name: "Not now" }).click();
   await expect(page.getByText("SNOOZED", { exact: true })).toBeVisible();
-  await expect(page.getByText("Snoozed. I'll bring it back if the numbers get worse.")).toBeVisible();
+  await expect(
+    page.getByText("Snoozed. I'll bring it back if the numbers get worse.")
+  ).toBeVisible();
   // Back/Next preserves: leave via the case Back, come back to Decide.
   await page.getByRole("button", { name: "← Back", exact: true }).click();
   await expect(page.getByRole("button", { name: "Decide →" })).toBeVisible();
@@ -193,7 +195,9 @@ test("dismiss-reason flow on file://", async ({ page }) => {
   await backToDetect();
   await expect(workIt).toHaveCount(3);
   // The title now lives only in the handled log (the waiting card is gone).
-  await expect(page.getByText("Lookalike – Purchasers looks profitable, loses money")).toHaveCount(1);
+  await expect(page.getByText("Lookalike – Purchasers looks profitable, loses money")).toHaveCount(
+    1
+  );
   await expect(page.getByText("Handled & snoozed (1)")).toBeVisible();
   await page.getByText("Handled & snoozed (1)").click();
   await expect(page.getByText("snoozed").first()).toBeVisible();
@@ -214,8 +218,12 @@ test("dismiss-reason flow on file://", async ({ page }) => {
   await page.getByRole("button", { name: "Dismiss" }).click();
   await page.getByRole("button", { name: "Disagree" }).click();
   await expect(page.getByText("OVERRIDE LOGGED", { exact: true })).toBeVisible();
-  await expect(page.getByText("Noted — I've logged that you disagree with my read on this one.")).toBeVisible();
-  await expect(page.getByText("You disagreed with me on this one. I've kept your call.")).toBeVisible();
+  await expect(
+    page.getByText("Noted — I've logged that you disagree with my read on this one.")
+  ).toBeVisible();
+  await expect(
+    page.getByText("You disagreed with me on this one. I've kept your call.")
+  ).toBeVisible();
   await backToDetect();
   await expect(workIt).toHaveCount(3);
   await expect(page.getByText("You've overridden 1 of my reads — I've logged them.")).toBeVisible();
@@ -250,7 +258,9 @@ test("dismiss-reason flow on file://", async ({ page }) => {
   await page.getByRole("button", { name: "Approve plan" }).click();
   await page.getByRole("button", { name: "Open the watchlist →" }).click();
   await expect(page.getByRole("heading", { name: "Did it work?" })).toBeVisible();
-  await expect(page.getByText("Lookalike – Purchasers looks profitable, loses money")).toBeVisible();
+  await expect(
+    page.getByText("Lookalike – Purchasers looks profitable, loses money")
+  ).toBeVisible();
 
   expect({ pageErrors, consoleErrors, failedRequests }).toEqual({
     pageErrors: [],

@@ -1,1 +1,105 @@
-{"_note":"Qualitative gap library for funnel-leak diagnosis. Heuristic content — the demo can detect WHERE the leak is from data, but only a human (v1) or the production inspection agent can confirm these. Each item carries its detection source: data (computed), inspection (needs an agent to look), input (needs the merchant).","stages":{"add_to_cart_to_checkout":{"checklist":[{"detail":"Shipping revealed late or priced high with no free-shipping threshold in sight. The #1 cart killer in Egypt.","gap":"Shipping-cost surprise","source":"inspection"},{"detail":"Single-item carts with nothing nudging a second item — no bundle discount, no 'complete the look'.","gap":"No bundle or upsell incentive","source":"inspection"},{"detail":"No clear exchange/return promise near the buy button. Shoppers won't risk it without one.","gap":"Weak guarantee and returns","source":"inspection"},{"detail":"Missing the payment method they wanted — installments, wallet, or clear cash-on-delivery terms.","gap":"Payment options","source":"input"},{"detail":"The ad promised one price or deal, the cart shows another. Check the top ad sets' landing message against the cart.","gap":"Offer vs ad mismatch","source":"inspection"}],"fix_cause":"Fix the top-scoring item above, then re-measure this step for 7 days.","label":"Add to cart → Checkout","likely_meaning":"Intent was there, then cold feet. Almost always the offer — the math changed in the shopper's head.","recover":"Abandoned-cart nudge with the shipping math spelled out."},"checkout_to_purchase":{"checklist":[{"detail":"No testimonials, reviews, or security badges on the checkout step itself. This is where doubt peaks.","gap":"Trust signals at checkout","source":"inspection"},{"detail":"Too many steps or form fields, no guest checkout, forced account creation.","gap":"Checkout friction","source":"inspection"},{"detail":"Slow checkout on mobile data kills completions silently — most Egyptian shoppers never touch desktop.","gap":"Site speed on mobile","source":"inspection"},{"detail":"If courier failures are climbing, checkouts stall because shoppers have learned orders don't arrive. Check the delivery trend alongside this step.","gap":"Failed and refused deliveries","source":"data"},{"detail":"No order confirmation on WhatsApp after purchase — shoppers in Egypt expect it, and its absence seeds doubt mid-checkout.","gap":"Confirmation experience","source":"input"}],"fix_cause":"Fix the top-scoring item above, then re-measure this step for 7 days.","label":"Checkout → Purchase","likely_meaning":"They were ready to pay and something stopped them. Usually trust or friction at the finish line.","recover":"WhatsApp nudge to checkout abandoners from the last 48h."},"session_to_add_to_cart":{"checklist":[{"detail":"Weak or too few product photos/video. For fashion: no try-on, no fabric close-up, no size reference on a real body.","gap":"Product page imagery","source":"inspection"},{"detail":"No ratings or reviews visible without scrolling. Shoppers decide in seconds — social proof has to be instant.","gap":"Reviews above the fold","source":"inspection"},{"detail":"Price hidden behind variants, no compare-at anchor, discount mechanics unclear on first view.","gap":"Price and offer clarity","source":"inspection"},{"detail":"Low-intent sessions from broad targeting or mismatched creative. Check bounce by ad set — if one ad set's traffic never converts, it's the audience, not the page.","gap":"Traffic quality","source":"data"},{"detail":"Dead or thin Instagram/TikTok makes first-time visitors bounce — they check your profile before they trust your store.","gap":"Social presence gap","source":"inspection"}],"fix_cause":"Fix the top-scoring item above, then re-measure this step for 7 days.","label":"Sessions → Add to cart","likely_meaning":"They land, they don't bite. Usually the product page — or the traffic itself was never going to buy.","recover":"Retarget the bounced sessions with the product's best creative."}},"version":1}
+{
+  "_note": "Qualitative gap library for funnel-leak diagnosis. Heuristic content — the demo can detect WHERE the leak is from data, but only a human (v1) or the production inspection agent can confirm these. Each item carries its detection source: data (computed), inspection (needs an agent to look), input (needs the merchant).",
+  "stages": {
+    "add_to_cart_to_checkout": {
+      "checklist": [
+        {
+          "detail": "Shipping revealed late or priced high with no free-shipping threshold in sight. The #1 cart killer in Egypt.",
+          "gap": "Shipping-cost surprise",
+          "source": "inspection"
+        },
+        {
+          "detail": "Single-item carts with nothing nudging a second item — no bundle discount, no 'complete the look'.",
+          "gap": "No bundle or upsell incentive",
+          "source": "inspection"
+        },
+        {
+          "detail": "No clear exchange/return promise near the buy button. Shoppers won't risk it without one.",
+          "gap": "Weak guarantee and returns",
+          "source": "inspection"
+        },
+        {
+          "detail": "Missing the payment method they wanted — installments, wallet, or clear cash-on-delivery terms.",
+          "gap": "Payment options",
+          "source": "input"
+        },
+        {
+          "detail": "The ad promised one price or deal, the cart shows another. Check the top ad sets' landing message against the cart.",
+          "gap": "Offer vs ad mismatch",
+          "source": "inspection"
+        }
+      ],
+      "fix_cause": "Fix the top-scoring item above, then re-measure this step for 7 days.",
+      "label": "Add to cart → Checkout",
+      "likely_meaning": "Intent was there, then cold feet. Almost always the offer — the math changed in the shopper's head.",
+      "recover": "Abandoned-cart nudge with the shipping math spelled out."
+    },
+    "checkout_to_purchase": {
+      "checklist": [
+        {
+          "detail": "No testimonials, reviews, or security badges on the checkout step itself. This is where doubt peaks.",
+          "gap": "Trust signals at checkout",
+          "source": "inspection"
+        },
+        {
+          "detail": "Too many steps or form fields, no guest checkout, forced account creation.",
+          "gap": "Checkout friction",
+          "source": "inspection"
+        },
+        {
+          "detail": "Slow checkout on mobile data kills completions silently — most Egyptian shoppers never touch desktop.",
+          "gap": "Site speed on mobile",
+          "source": "inspection"
+        },
+        {
+          "detail": "If courier failures are climbing, checkouts stall because shoppers have learned orders don't arrive. Check the delivery trend alongside this step.",
+          "gap": "Failed and refused deliveries",
+          "source": "data"
+        },
+        {
+          "detail": "No order confirmation on WhatsApp after purchase — shoppers in Egypt expect it, and its absence seeds doubt mid-checkout.",
+          "gap": "Confirmation experience",
+          "source": "input"
+        }
+      ],
+      "fix_cause": "Fix the top-scoring item above, then re-measure this step for 7 days.",
+      "label": "Checkout → Purchase",
+      "likely_meaning": "They were ready to pay and something stopped them. Usually trust or friction at the finish line.",
+      "recover": "WhatsApp nudge to checkout abandoners from the last 48h."
+    },
+    "session_to_add_to_cart": {
+      "checklist": [
+        {
+          "detail": "Weak or too few product photos/video. For fashion: no try-on, no fabric close-up, no size reference on a real body.",
+          "gap": "Product page imagery",
+          "source": "inspection"
+        },
+        {
+          "detail": "No ratings or reviews visible without scrolling. Shoppers decide in seconds — social proof has to be instant.",
+          "gap": "Reviews above the fold",
+          "source": "inspection"
+        },
+        {
+          "detail": "Price hidden behind variants, no compare-at anchor, discount mechanics unclear on first view.",
+          "gap": "Price and offer clarity",
+          "source": "inspection"
+        },
+        {
+          "detail": "Low-intent sessions from broad targeting or mismatched creative. Check bounce by ad set — if one ad set's traffic never converts, it's the audience, not the page.",
+          "gap": "Traffic quality",
+          "source": "data"
+        },
+        {
+          "detail": "Dead or thin Instagram/TikTok makes first-time visitors bounce — they check your profile before they trust your store.",
+          "gap": "Social presence gap",
+          "source": "inspection"
+        }
+      ],
+      "fix_cause": "Fix the top-scoring item above, then re-measure this step for 7 days.",
+      "label": "Sessions → Add to cart",
+      "likely_meaning": "They land, they don't bite. Usually the product page — or the traffic itself was never going to buy.",
+      "recover": "Retarget the bounced sessions with the product's best creative."
+    }
+  },
+  "version": 1
+}

@@ -18,8 +18,7 @@ export const TEMPLATE_FILES: { key: CsvFileKey; label: string }[] = [
 ];
 
 function headersFor(key: CsvFileKey): string[] {
-  const base =
-    key === "spend" || key === "orders" ? REQUIRED_COLS[key] : OPTIONAL_COLS[key];
+  const base = key === "spend" || key === "orders" ? REQUIRED_COLS[key] : OPTIONAL_COLS[key];
   const extras: Record<string, string[]> = {
     spend: [],
     orders: ["cogs_egp", "shipping_cost_egp", "return_shipping_egp", "ad_id"],
@@ -52,9 +51,36 @@ export function buildTemplateCsvs(data: DemoData): Record<CsvFileKey, string> {
   }));
   const firstAdsets = data.adsets.slice(0, 3);
   const ordersRows = [
-    { order_id: "TPL-001", adset_id: firstAdsets[0]?.id ?? "adset-1", order_value_egp: data.brand.aov_egp, cogs_egp: "", shipping_cost_egp: "", return_shipping_egp: "", courier_status: "delivered", ad_id: "" },
-    { order_id: "TPL-002", adset_id: firstAdsets[1]?.id ?? "adset-1", order_value_egp: data.brand.aov_egp, cogs_egp: "", shipping_cost_egp: "", return_shipping_egp: "", courier_status: "refused", ad_id: "" },
-    { order_id: "TPL-003", adset_id: firstAdsets[0]?.id ?? "adset-1", order_value_egp: data.brand.aov_egp, cogs_egp: "", shipping_cost_egp: "", return_shipping_egp: "", courier_status: "delivered", ad_id: "" },
+    {
+      order_id: "TPL-001",
+      adset_id: firstAdsets[0]?.id ?? "adset-1",
+      order_value_egp: data.brand.aov_egp,
+      cogs_egp: "",
+      shipping_cost_egp: "",
+      return_shipping_egp: "",
+      courier_status: "delivered",
+      ad_id: "",
+    },
+    {
+      order_id: "TPL-002",
+      adset_id: firstAdsets[1]?.id ?? "adset-1",
+      order_value_egp: data.brand.aov_egp,
+      cogs_egp: "",
+      shipping_cost_egp: "",
+      return_shipping_egp: "",
+      courier_status: "refused",
+      ad_id: "",
+    },
+    {
+      order_id: "TPL-003",
+      adset_id: firstAdsets[0]?.id ?? "adset-1",
+      order_value_egp: data.brand.aov_egp,
+      cogs_egp: "",
+      shipping_cost_egp: "",
+      return_shipping_egp: "",
+      courier_status: "delivered",
+      ad_id: "",
+    },
   ];
   const adsRows = data.ads.slice(0, 3).map((a) => ({
     ad_id: a.ad_id,

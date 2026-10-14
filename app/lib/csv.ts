@@ -18,8 +18,26 @@ export const REQUIRED_COLS: Record<string, string[]> = {
   orders: ["order_id", "adset_id", "order_value_egp", "courier_status"],
 };
 export const OPTIONAL_COLS: Record<string, string[]> = {
-  ads: ["ad_id", "ad_name", "adset_id", "spend_egp", "platform_roas", "frequency", "ctr_14d_ago", "ctr_now"],
-  daily: ["date", "adset_id", "spend_egp", "platform_roas", "cpc_egp", "ctr_pct", "aov_egp", "failed_delivery_rate_pct"],
+  ads: [
+    "ad_id",
+    "ad_name",
+    "adset_id",
+    "spend_egp",
+    "platform_roas",
+    "frequency",
+    "ctr_14d_ago",
+    "ctr_now",
+  ],
+  daily: [
+    "date",
+    "adset_id",
+    "spend_egp",
+    "platform_roas",
+    "cpc_egp",
+    "ctr_pct",
+    "aov_egp",
+    "failed_delivery_rate_pct",
+  ],
   funnel: ["date", "channel", "step", "count"],
 };
 
@@ -35,8 +53,23 @@ const EXTRA_COLS: Record<string, string[]> = {
 const NUMERIC_COLS: Record<string, string[]> = {
   spend: ["spend_egp", "platform_roas"],
   orders: ["order_value_egp", "cogs_egp", "shipping_cost_egp", "return_shipping_egp"],
-  ads: ["spend_egp", "platform_roas", "frequency", "ctr_14d_ago", "ctr_now", "impressions", "clicks"],
-  daily: ["spend_egp", "platform_roas", "cpc_egp", "ctr_pct", "aov_egp", "failed_delivery_rate_pct"],
+  ads: [
+    "spend_egp",
+    "platform_roas",
+    "frequency",
+    "ctr_14d_ago",
+    "ctr_now",
+    "impressions",
+    "clicks",
+  ],
+  daily: [
+    "spend_egp",
+    "platform_roas",
+    "cpc_egp",
+    "ctr_pct",
+    "aov_egp",
+    "failed_delivery_rate_pct",
+  ],
   funnel: ["count"],
 };
 
@@ -66,7 +99,11 @@ export const CANCELLED = Symbol("csv-parse-cancelled");
 /** P6-01: sniff , ; or tab from the first lines (raw count — good enough to
  *  pick among exactly these three; Papa validates the rest). */
 export function detectDelimiter(text: string): { char: string; name: string } {
-  const sample = text.split(/\r\n|\r|\n/).filter((l) => l.trim() !== "").slice(0, 5).join("\n");
+  const sample = text
+    .split(/\r\n|\r|\n/)
+    .filter((l) => l.trim() !== "")
+    .slice(0, 5)
+    .join("\n");
   const counts: Array<[string, string, number]> = [
     [",", ",", (sample.match(/,/g) || []).length],
     [";", ";", (sample.match(/;/g) || []).length],
@@ -102,7 +139,11 @@ export function parseNumValue(
   if (dots > 0 && commas > 0) {
     // Both present: the LAST separator is the decimal one.
     const dec = s.lastIndexOf(".") > s.lastIndexOf(",") ? "." : ",";
-    num = s.split("").filter((ch) => /\d/.test(ch) || ch === dec).join("").replace(dec, ".");
+    num = s
+      .split("")
+      .filter((ch) => /\d/.test(ch) || ch === dec)
+      .join("")
+      .replace(dec, ".");
   } else if (commas > 0) {
     if (decimalComma && /^-?\d+,\d+$/.test(s)) num = s.replace(",", ".");
     // "1,234" (thousands) accepted; "12,5" / "1,2345" ambiguous → reject.
@@ -141,7 +182,11 @@ function validDate(y: number, mo: number, d: number): boolean {
 export function parseDateValue(raw: string): { ok: true; date: ParsedDate } | { ok: false } {
   const s = raw.trim();
   let m: RegExpMatchArray | null;
-  if ((m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?$/))) {
+  if (
+    (m = s.match(
+      /^(\d{4})-(\d{2})-(\d{2})(?:[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?$/
+    ))
+  ) {
     const y = +m[1];
     const mo = +m[2];
     const d = +m[3];
@@ -160,7 +205,10 @@ export function parseDateValue(raw: string): { ok: true; date: ParsedDate } | { 
     const mo = +m[2];
     const d = +m[3];
     if (!validDate(y, mo, d)) return { ok: false };
-    return { ok: true, date: { iso: `${m[1]}-${m[2]}-${m[3]}`, format: "yyyy/mm/dd", ambiguousOrder: false } };
+    return {
+      ok: true,
+      date: { iso: `${m[1]}-${m[2]}-${m[3]}`, format: "yyyy/mm/dd", ambiguousOrder: false },
+    };
   }
   if ((m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/))) {
     const dd = +m[1];
@@ -199,7 +247,9 @@ function mapHeaders(key: keyof CsvTables, label: string, rawCols: string[]): Hea
     // Duplicate (raw or alias) headers: first occurrence kept.
     const canonical = canonicalHeader(raw, known) ?? raw.trim().toLowerCase();
     if (seenCanonical.has(canonical)) {
-      warnings.push(`${label}: duplicate columns ("${raw}" also maps to ${canonical}) — first occurrence kept`);
+      warnings.push(
+        `${label}: duplicate columns ("${raw}" also maps to ${canonical}) — first occurrence kept`
+      );
       return null;
     }
     seenCanonical.add(canonical);
@@ -272,7 +322,11 @@ function normalizeRow(
       dateFormats.add(parsed.date.format);
       if (parsed.date.ambiguousOrder) ambiguousDates.n += 1;
     } else {
-      pushProblem(label, p, `${label} row ${line}: ${col} has an unsupported date '${v}' (use ISO, dd/mm/yyyy or yyyy/mm/dd)`);
+      pushProblem(
+        label,
+        p,
+        `${label} row ${line}: ${col} has an unsupported date '${v}' (use ISO, dd/mm/yyyy or yyyy/mm/dd)`
+      );
     }
   }
   return out;
@@ -292,11 +346,18 @@ export function parseCsv(key: keyof CsvTables, text: string): ParsedFile {
   const warnings: string[] = [];
   const infos: string[] = [];
   const fail = (extraErrors: string[] = []): ParsedFile => ({
-    key, rows: [], rowNums: [], errors: [...errors, ...extraErrors], warnings, infos,
+    key,
+    rows: [],
+    rowNums: [],
+    errors: [...errors, ...extraErrors],
+    warnings,
+    infos,
   });
 
   if (text.includes("�")) {
-    warnings.push(`${label}: replacement characters found — the file may not be UTF-8. Re-save as CSV UTF-8 and reload.`);
+    warnings.push(
+      `${label}: replacement characters found — the file may not be UTF-8. Re-save as CSV UTF-8 and reload.`
+    );
   }
   // BOM from Excel exports would otherwise corrupt the first header name
   const clean = text.replace(/^\uFEFF/, "");
@@ -342,7 +403,18 @@ export function parseCsv(key: keyof CsvTables, text: string): ParsedFile {
       return;
     }
     const line = i + 2; // exact physical line: header is line 1
-    const row = normalizeRow(key, label, hm.cols, r, rawCols, line, problems, dateFormats, ambiguousDates, delimiter === ";");
+    const row = normalizeRow(
+      key,
+      label,
+      hm.cols,
+      r,
+      rawCols,
+      line,
+      problems,
+      dateFormats,
+      ambiguousDates,
+      delimiter === ";"
+    );
     if (row) {
       rows.push(row);
       rowNums.push(line);
@@ -354,7 +426,9 @@ export function parseCsv(key: keyof CsvTables, text: string): ParsedFile {
     infos.push(`${label}: date format(s) detected: ${Array.from(dateFormats).join(", ")}`);
   }
   if (ambiguousDates.n > 0) {
-    warnings.push(`${label}: day/month order ambiguous in ${ambiguousDates.n} value(s) — read as dd/mm/yyyy`);
+    warnings.push(
+      `${label}: day/month order ambiguous in ${ambiguousDates.n} value(s) — read as dd/mm/yyyy`
+    );
   }
   errors.push(...problems.errors);
   if (problems.overflow > 0) {
@@ -412,7 +486,18 @@ export async function parseCsvLarge(
           res.data.forEach((r) => {
             if (isBlankRow(r)) return;
             kept += 1;
-            const row = normalizeRow(key, label, hm.cols, r, rawCols, kept + 1, problems, dateFormats, ambiguousDates, decimalComma);
+            const row = normalizeRow(
+              key,
+              label,
+              hm.cols,
+              r,
+              rawCols,
+              kept + 1,
+              problems,
+              dateFormats,
+              ambiguousDates,
+              decimalComma
+            );
             if (row) {
               rows.push(row);
               rowNums.push(kept + 1);
@@ -439,11 +524,21 @@ export async function parseCsvLarge(
     throw e;
   }
   if (rows.length === 0) {
-    return { key, rows: [], rowNums: [], errors: [`${label}: no data rows found`], warnings, infos };
+    return {
+      key,
+      rows: [],
+      rowNums: [],
+      errors: [`${label}: no data rows found`],
+      warnings,
+      infos,
+    };
   }
-  if (dateFormats.size > 0) infos.push(`${label}: date format(s) detected: ${Array.from(dateFormats).join(", ")}`);
+  if (dateFormats.size > 0)
+    infos.push(`${label}: date format(s) detected: ${Array.from(dateFormats).join(", ")}`);
   if (ambiguousDates.n > 0) {
-    warnings.push(`${label}: day/month order ambiguous in ${ambiguousDates.n} value(s) — read as dd/mm/yyyy`);
+    warnings.push(
+      `${label}: day/month order ambiguous in ${ambiguousDates.n} value(s) — read as dd/mm/yyyy`
+    );
   }
   const errors = [...problems.errors];
   if (problems.overflow > 0) errors.push(`${label}: …and ${problems.overflow} more row problem(s)`);

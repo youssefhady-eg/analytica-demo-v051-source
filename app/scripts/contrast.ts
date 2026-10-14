@@ -78,7 +78,9 @@ for (const bg of [PAGE, CARD]) {
     const r = ratio(INK[fg], bg);
     const ok = r >= 4.5;
     if (!ok) failures += 1;
-    console.log(`  ${ok ? "PASS" : "FAIL"} ${fg} on ${bg === PAGE ? "page" : "card"}: ${r.toFixed(2)}:1`);
+    console.log(
+      `  ${ok ? "PASS" : "FAIL"} ${fg} on ${bg === PAGE ? "page" : "card"}: ${r.toFixed(2)}:1`
+    );
   }
 }
 for (const [fg, bg, label] of SOLID_BUTTONS) {

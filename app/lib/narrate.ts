@@ -168,7 +168,9 @@ export function narrationMetrics(
     impact_egp_monthly: c.impactEgp,
     // P1-04: live mode sees how far the peel has gone.
     ...(stage === "diagnose" && opts.totalLayers
-      ? { layers_revealed: { revealed: opts.revealed ?? opts.totalLayers, total: opts.totalLayers } }
+      ? {
+          layers_revealed: { revealed: opts.revealed ?? opts.totalLayers, total: opts.totalLayers },
+        }
       : {}),
     adset: a
       ? {

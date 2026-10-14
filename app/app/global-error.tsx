@@ -23,8 +23,7 @@ export default function GlobalError({
           justifyContent: "center",
           background: "#070b12",
           color: "#f1f5f9",
-          fontFamily:
-            "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
           textAlign: "center",
         }}
       >
@@ -49,9 +48,7 @@ export default function GlobalError({
             Reload
           </button>
           {error.digest && (
-            <p style={{ marginTop: 20, fontSize: 12, color: "#64748b" }}>
-              ref: {error.digest}
-            </p>
+            <p style={{ marginTop: 20, fontSize: 12, color: "#64748b" }}>ref: {error.digest}</p>
           )}
         </div>
       </body>

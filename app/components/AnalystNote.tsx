@@ -60,7 +60,9 @@ export default function AnalystNote({
     >
       <div className="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-cyan-300 to-cyan-600" />
       <div className="mb-2 flex items-center gap-2">
-        <span className={`h-2 w-2 rounded-full ${live ? "bg-cyan-300 pulse-dot" : "bg-emerald-400"}`} />
+        <span
+          className={`h-2 w-2 rounded-full ${live ? "bg-cyan-300 pulse-dot" : "bg-emerald-400"}`}
+        />
         <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">
           Analyst
         </span>

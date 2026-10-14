@@ -70,8 +70,7 @@ export interface TourStep {
   notes: string;
 }
 
-const RESET_CAPTION =
-  "And back to a clean slate — the watchlist and the handled log are cleared.";
+const RESET_CAPTION = "And back to a clean slate — the watchlist and the handled log are cleared.";
 
 export const VONDERA_TRACK: TourStep[] = [
   {
@@ -81,7 +80,8 @@ export const VONDERA_TRACK: TourStep[] = [
     view: "home",
     target: "home-hero",
     caption: () => "Analytica turns Vondera's data into an investigation, not another dashboard.",
-    notes: "Product thesis: Detect → Isolate → Diagnose → Decide → Verify. Data in from Vondera apps, intelligence out to VPal and apps.",
+    notes:
+      "Product thesis: Detect → Isolate → Diagnose → Decide → Verify. Data in from Vondera apps, intelligence out to VPal and apps.",
   },
   {
     id: "v-ecosystem",
@@ -89,8 +89,10 @@ export const VONDERA_TRACK: TourStep[] = [
     title: "The ecosystem",
     view: "home",
     target: "home-ecosystem",
-    caption: () => "Data in from Vondera apps, recommendations out to VPal and apps. Analytica diagnoses and proposes; the ecosystem executes.",
-    notes: "Analytica is one of Vondera's products — intelligence in the middle, execution at the edges. Recommendations only, never auto-execution.",
+    caption: () =>
+      "Data in from Vondera apps, recommendations out to VPal and apps. Analytica diagnoses and proposes; the ecosystem executes.",
+    notes:
+      "Analytica is one of Vondera's products — intelligence in the middle, execution at the edges. Recommendations only, never auto-execution.",
   },
   {
     id: "v-hooks",
@@ -98,8 +100,10 @@ export const VONDERA_TRACK: TourStep[] = [
     title: "Your numbers lie",
     view: "detect",
     target: "detect-hooks",
-    caption: (ctx) => `The platform says ${ctx.roas}. After costs it earns ${ctx.poas}. That's a ${ctx.over} overstatement.`,
-    notes: "The hook: blended platform ROAS vs true profit POAS, computed live. This is pillar one.",
+    caption: (ctx) =>
+      `The platform says ${ctx.roas}. After costs it earns ${ctx.poas}. That's a ${ctx.over} overstatement.`,
+    notes:
+      "The hook: blended platform ROAS vs true profit POAS, computed live. This is pillar one.",
   },
   {
     id: "v-hitlist",
@@ -107,8 +111,10 @@ export const VONDERA_TRACK: TourStep[] = [
     title: "Where to focus",
     view: "detect",
     target: "detect-list",
-    caption: (ctx) => `${ctx.waitingCount} cases, ranked by money. The biggest is worth ${ctx.topImpact} a month.`,
-    notes: "Morning triage: every alert is a case, ranked by EGP impact. START HERE removes ambiguity.",
+    caption: (ctx) =>
+      `${ctx.waitingCount} cases, ranked by money. The biggest is worth ${ctx.topImpact} a month.`,
+    notes:
+      "Morning triage: every alert is a case, ranked by EGP impact. START HERE removes ambiguity.",
   },
   {
     id: "v-peel",
@@ -119,7 +125,8 @@ export const VONDERA_TRACK: TourStep[] = [
     revealLayers: true,
     target: "diagnose-layers",
     caption: () => "The Analyst rules things out one layer at a time — and says what it found.",
-    notes: "The star moment: click-to-peel evidence, each layer ruling something out. Culprit card is rules-detected, checklist is heuristic — say both aloud.",
+    notes:
+      "The star moment: click-to-peel evidence, each layer ruling something out. Culprit card is rules-detected, checklist is heuristic — say both aloud.",
   },
   {
     id: "v-close",
@@ -129,7 +136,8 @@ export const VONDERA_TRACK: TourStep[] = [
     demoAction: "approve-top",
     target: "verify-list",
     caption: () => "The loop most dashboards never close: approve, then watch whether it worked.",
-    notes: "Entering this step approves the top waiting case (a visible demo action) and lands on the watchlist. Reset at the end undoes it.",
+    notes:
+      "Entering this step approves the top waiting case (a visible demo action) and lands on the watchlist. Reset at the end undoes it.",
   },
   {
     id: "v-provenance",
@@ -137,8 +145,10 @@ export const VONDERA_TRACK: TourStep[] = [
     title: "Provenance",
     view: "detect",
     target: "detect-analyst",
-    caption: () => "Every line is tagged rules or ✨ live. Nothing is hidden, and no live model is needed to see value.",
-    notes: "Honesty is the product principle: rules narration by default, BYOK live mode, visible fallbacks, sample-data badges everywhere.",
+    caption: () =>
+      "Every line is tagged rules or ✨ live. Nothing is hidden, and no live model is needed to see value.",
+    notes:
+      "Honesty is the product principle: rules narration by default, BYOK live mode, visible fallbacks, sample-data badges everywhere.",
   },
   {
     id: "v-private",
@@ -147,7 +157,8 @@ export const VONDERA_TRACK: TourStep[] = [
     view: "upload",
     target: "upload-files",
     caption: () => "Everything is computed in the browser. Nothing leaves the machine.",
-    notes: "Merchant CSVs parse and compute locally — the sentence that gets data past legal. No network except the user-initiated BYOK call.",
+    notes:
+      "Merchant CSVs parse and compute locally — the sentence that gets data past legal. No network except the user-initiated BYOK call.",
   },
   {
     id: "v-ask",
@@ -157,7 +168,8 @@ export const VONDERA_TRACK: TourStep[] = [
     openAsk: true,
     target: "ask-panel",
     caption: () => "Ask questions in plain words — answered only from governed metrics.",
-    notes: "The drawer answers from the same governed metrics — click a suggested chip live. Rules by default, ✨ live behind the BYOK toggle.",
+    notes:
+      "The drawer answers from the same governed metrics — click a suggested chip live. Rules by default, ✨ live behind the BYOK toggle.",
   },
   {
     id: "v-reset",
@@ -167,7 +179,8 @@ export const VONDERA_TRACK: TourStep[] = [
     demoAction: "reset",
     target: "detect-list",
     caption: () => RESET_CAPTION,
-    notes: "Reset clears the watchlist, dispositions and the tour — the demo is exactly as it started.",
+    notes:
+      "Reset clears the watchlist, dispositions and the tour — the demo is exactly as it started.",
   },
 ];
 
@@ -179,7 +192,8 @@ export const MARKETER_TRACK: TourStep[] = [
     view: "detect",
     target: "detect-list",
     caption: (ctx) => `Start where the money is: ${ctx.topTitle}.`,
-    notes: "The 'would I open this every morning' test: one ranked list, money first. Open the top card.",
+    notes:
+      "The 'would I open this every morning' test: one ranked list, money first. Open the top card.",
   },
   {
     id: "m-scope",
@@ -189,7 +203,8 @@ export const MARKETER_TRACK: TourStep[] = [
     stage: "isolate",
     target: "isolate-evidence",
     caption: () => "Scope it before you diagnose it.",
-    notes: "Isolate is kind-specific: the one view that localizes the damage. Profit-lie cases get the margin decomposition.",
+    notes:
+      "Isolate is kind-specific: the one view that localizes the damage. Profit-lie cases get the margin decomposition.",
   },
   {
     id: "m-peel",
@@ -200,7 +215,8 @@ export const MARKETER_TRACK: TourStep[] = [
     revealLayers: true,
     target: "diagnose-layers",
     caption: () => "Peel the layers — each one rules something out.",
-    notes: "Let the marketer click a peel themselves if time allows — the tactile moment sells the investigation feel.",
+    notes:
+      "Let the marketer click a peel themselves if time allows — the tactile moment sells the investigation feel.",
   },
   {
     id: "m-plan",
@@ -210,7 +226,8 @@ export const MARKETER_TRACK: TourStep[] = [
     stage: "decide",
     target: "decide-plan",
     caption: () => "A sequenced plan: what first, what next, what to re-measure.",
-    notes: "Not one action — a timed sequence with the honesty footnote. Approve closes into Verify; Dismiss asks why.",
+    notes:
+      "Not one action — a timed sequence with the honesty footnote. Approve closes into Verify; Dismiss asks why.",
   },
   {
     id: "m-snooze",
@@ -222,7 +239,8 @@ export const MARKETER_TRACK: TourStep[] = [
     needsDemoControls: true,
     target: "handled-log",
     caption: () => "Not ready? Snooze it. It comes back if the numbers get worse.",
-    notes: "Entering this step snoozes the top case (visible demo action). Open the Handled & snoozed log, then click Simulate worsening (demo) on its row to show the re-surface.",
+    notes:
+      "Entering this step snoozes the top case (visible demo action). Open the Handled & snoozed log, then click Simulate worsening (demo) on its row to show the re-surface.",
   },
   {
     id: "m-disagree",
@@ -233,7 +251,8 @@ export const MARKETER_TRACK: TourStep[] = [
     expandLog: true,
     target: "handled-log",
     caption: () => "Think I'm wrong? Say so. It's logged for the Analyst.",
-    notes: "Entering this step overrides the next case. Overrides append to the Detect note and ride the live-mode metrics — say that aloud.",
+    notes:
+      "Entering this step overrides the next case. Overrides append to the Detect note and ride the live-mode metrics — say that aloud.",
   },
   {
     id: "m-verify",
@@ -241,8 +260,10 @@ export const MARKETER_TRACK: TourStep[] = [
     title: "Verify",
     view: "verify",
     target: "verify-list",
-    caption: () => "Every approval lands here. In production, this is where the recovery gets watched.",
-    notes: "Trust compounds when the tool shows receipts. Empty state teaches the loop if nothing is approved yet.",
+    caption: () =>
+      "Every approval lands here. In production, this is where the recovery gets watched.",
+    notes:
+      "Trust compounds when the tool shows receipts. Empty state teaches the loop if nothing is approved yet.",
   },
   {
     id: "m-upload",
@@ -251,7 +272,8 @@ export const MARKETER_TRACK: TourStep[] = [
     view: "upload",
     target: "upload-files",
     caption: () => "Bring your own numbers — the whole flow recomputes in the browser.",
-    notes: "Download template CSVs lands in Phase 6. Today: spend.csv + orders.csv required, rest optional, nothing uploaded anywhere.",
+    notes:
+      "Download template CSVs lands in Phase 6. Today: spend.csv + orders.csv required, rest optional, nothing uploaded anywhere.",
   },
   {
     id: "m-phone",
@@ -260,7 +282,8 @@ export const MARKETER_TRACK: TourStep[] = [
     view: "detect",
     target: "detect-list",
     caption: () => "Same flow on a phone.",
-    notes: "If possible, open the demo on a phone now — 360px layout, sticky action bar, stacked cards.",
+    notes:
+      "If possible, open the demo on a phone now — 360px layout, sticky action bar, stacked cards.",
   },
   {
     id: "m-reset",
@@ -269,7 +292,8 @@ export const MARKETER_TRACK: TourStep[] = [
     view: "detect",
     demoAction: "reset",
     caption: () => RESET_CAPTION,
-    notes: "Reset clears the watchlist, dispositions and the tour — the demo is exactly as it started.",
+    notes:
+      "Reset clears the watchlist, dispositions and the tour — the demo is exactly as it started.",
   },
 ];
 

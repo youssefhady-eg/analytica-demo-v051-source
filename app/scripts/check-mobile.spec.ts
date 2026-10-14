@@ -43,7 +43,10 @@ test("no horizontal page scroll at 360px on every view", async ({ page }) => {
   await expectNoOverflow(page, "detect");
 
   // Money case: isolate carries the margin bar + ROAS/POAS table + AdTable cards.
-  await page.getByRole("button", { name: /Work it/ }).nth(1).click();
+  await page
+    .getByRole("button", { name: /Work it/ })
+    .nth(1)
+    .click();
   await expect(page.getByRole("button", { name: "Diagnose →" })).toBeVisible();
   await expectNoOverflow(page, "case-isolate-money");
 

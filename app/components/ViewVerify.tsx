@@ -30,9 +30,9 @@ export default function ViewVerify({
       <Eyebrow>Step 5 · Verify</Eyebrow>
       <h1 className="mb-2 mt-1 text-3xl font-bold tracking-tight text-slate-50">Did it work?</h1>
       <p className="mb-6 max-w-3xl text-slate-400">
-        Every approved action lands here. In production this page watches the metric
-        daily and flags you the moment it recovers — or doesn&apos;t. Trust compounds
-        when the tool shows its receipts.
+        Every approved action lands here. In production this page watches the metric daily and flags
+        you the moment it recovers — or doesn&apos;t. Trust compounds when the tool shows its
+        receipts.
       </p>
       <Stepper current="verify" />
 
@@ -40,10 +40,13 @@ export default function ViewVerify({
         <Card className="border-dashed border-white/20 p-5">
           <Title>👀 Nothing being watched yet</Title>
           <Text className="mt-2">
-            Work a case from triage and approve its action — it will appear here,
-            monitored until the metric recovers.
+            Work a case from triage and approve its action — it will appear here, monitored until
+            the metric recovers.
           </Text>
-          <button onClick={onDetect} className="mt-4 inline-block rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 hover:bg-cyan-300 min-h-[44px]">
+          <button
+            onClick={onDetect}
+            className="mt-4 inline-block rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 hover:bg-cyan-300 min-h-[44px]"
+          >
             ← Back to triage
           </button>
         </Card>
@@ -60,7 +63,8 @@ export default function ViewVerify({
                   <Text className="mt-1">{c.detail}</Text>
                   {c.impactEgp !== null && (
                     <Text className="mt-2">
-                      <span className="font-semibold">{fmtEGP(c.impactEgp)}/mo</span> at stake — watching for recovery over the next 14 days.
+                      <span className="font-semibold">{fmtEGP(c.impactEgp)}/mo</span> at stake —
+                      watching for recovery over the next 14 days.
                     </Text>
                   )}
                   {/* P1-06: every card links back to its case. */}
@@ -73,7 +77,9 @@ export default function ViewVerify({
                 </div>
                 {confirmStop === c.id ? (
                   <div className="shrink-0 rounded-lg bg-white/[0.03] p-2 text-right ring-1 ring-white/10">
-                    <p className="mb-2 font-mono text-xs text-slate-300">Stop watching this case?</p>
+                    <p className="mb-2 font-mono text-xs text-slate-300">
+                      Stop watching this case?
+                    </p>
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => {
@@ -110,7 +116,9 @@ export default function ViewVerify({
                 />
               </div>
               <Text className="mt-3 font-mono text-xs italic">
-                Demo: the watchlist is local and the recovery feed is illustrative. In production this is daily monitoring — the metric, the action taken, and the outcome, side by side.
+                Demo: the watchlist is local and the recovery feed is illustrative. In production
+                this is daily monitoring — the metric, the action taken, and the outcome, side by
+                side.
               </Text>
             </Card>
           ))}

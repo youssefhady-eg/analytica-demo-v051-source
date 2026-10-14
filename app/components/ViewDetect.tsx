@@ -49,7 +49,10 @@ export default function ViewDetect({
   // P2 §7.4: the handled log — dispositions whose case still exists.
   const handled = Object.entries(dispositions)
     .map(([id, disp]) => ({ id, disp, c: getCase(data, id) }))
-    .filter((r): r is { id: string; disp: Disposition; c: NonNullable<ReturnType<typeof getCase>> } => r.c !== null)
+    .filter(
+      (r): r is { id: string; disp: Disposition; c: NonNullable<ReturnType<typeof getCase>> } =>
+        r.c !== null
+    )
     .filter((r) => !(r.disp.kind === "snoozed" && r.disp.resurfaced));
   // P2 §7.7: overrides reach the Analyst note and the live metrics.
   const overrideList = handled
@@ -66,11 +69,13 @@ export default function ViewDetect({
       ? [{ label: "Funnel-leak scan", reason: status.funnel.reason ?? "", file: "funnel.csv" }]
       : []),
     ...(status.adLinkage.status === "skipped"
-      ? [{
-          label: "Per-ad profit",
-          reason: status.adLinkage.reason ?? "",
-          file: !data.hasAds ? "ads.csv" : "orders.csv",
-        }]
+      ? [
+          {
+            label: "Per-ad profit",
+            reason: status.adLinkage.reason ?? "",
+            file: !data.hasAds ? "ads.csv" : "orders.csv",
+          },
+        ]
       : []),
   ];
   // All-quiet copy names only the checks that ran (money offenders always scan).
@@ -93,12 +98,10 @@ export default function ViewDetect({
   return (
     <div>
       <Eyebrow>Mission control · triage</Eyebrow>
-      <h1 className="mb-2 mt-1 text-3xl font-bold tracking-tight text-slate-50">
-        Where to focus
-      </h1>
+      <h1 className="mb-2 mt-1 text-3xl font-bold tracking-tight text-slate-50">Where to focus</h1>
       <p className="mb-6 max-w-3xl text-slate-400">
-        Everything that moved enough to matter, ranked by money — detected by Analytica
-        and submitted by your marketers. Start at the top.
+        Everything that moved enough to matter, ranked by money — detected by Analytica and
+        submitted by your marketers. Start at the top.
       </p>
       <Stepper current={stage} />
 
@@ -115,7 +118,7 @@ export default function ViewDetect({
         </Card>
         <Card className="border-rose-500/30 p-5">
           <Text>Overstatement</Text>
-          <Metric className="mt-1 text-rose-400" >
+          <Metric className="mt-1 text-rose-400">
             <span style={{ textShadow: "0 0 24px rgba(251,113,133,0.35)" }}>
               {fmtX(blendedPoas ? blendedRoas / blendedPoas : 0)}
             </span>
@@ -129,7 +132,10 @@ export default function ViewDetect({
           <Title className="text-amber-300">Some checks couldn&apos;t run</Title>
           <ul className="mt-2 space-y-2">
             {skipped.map((s) => (
-              <li key={s.label} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-amber-200">
+              <li
+                key={s.label}
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-amber-200"
+              >
                 <span>
                   <span className="font-semibold">{s.label}</span> skipped — {s.reason}.
                 </span>
@@ -149,18 +155,20 @@ export default function ViewDetect({
         <Card className="border-cyan-400/30 p-5">
           <Title>All cases handled</Title>
           <Text className="mt-2">
-            Nothing left waiting — every case is on the watchlist or resolved. New movement will land here.
+            Nothing left waiting — every case is on the watchlist or resolved. New movement will
+            land here.
           </Text>
-          <button onClick={onVerify} className="mt-4 inline-block rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 hover:bg-cyan-300 min-h-[44px]">
+          <button
+            onClick={onVerify}
+            className="mt-4 inline-block rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 hover:bg-cyan-300 min-h-[44px]"
+          >
             Open the watchlist →
           </button>
         </Card>
       ) : cases.length === 0 ? (
         <Card className="border-emerald-400/30 p-5">
           <Title>✅ All quiet</Title>
-          <Text className="mt-2">
-            {calmText}
-          </Text>
+          <Text className="mt-2">{calmText}</Text>
         </Card>
       ) : (
         <div data-tour="detect-list" className="space-y-3">
@@ -240,7 +248,10 @@ export default function ViewDetect({
             </button>
           ))}
           {watched > 0 && (
-            <button onClick={onVerify} className="flex min-h-[44px] items-center font-mono text-[13px] font-medium text-slate-400 hover:text-cyan-300">
+            <button
+              onClick={onVerify}
+              className="flex min-h-[44px] items-center font-mono text-[13px] font-medium text-slate-400 hover:text-cyan-300"
+            >
               {watched} on the watchlist →
             </button>
           )}
@@ -253,7 +264,22 @@ export default function ViewDetect({
           caseTitle="morning triage"
           tourId="detect-analyst"
           metrics={{
-            ...narrationMetrics(stage, waiting[0] ?? cases[0] ?? { id: "none", kind: "roas-drop", title: "triage", detail: "", impactEgp: null, adsetId: null, channel: null, stepIdx: null, source: "detected" }, data),
+            ...narrationMetrics(
+              stage,
+              waiting[0] ??
+                cases[0] ?? {
+                  id: "none",
+                  kind: "roas-drop",
+                  title: "triage",
+                  detail: "",
+                  impactEgp: null,
+                  adsetId: null,
+                  channel: null,
+                  stepIdx: null,
+                  source: "detected",
+                },
+              data
+            ),
             human_overrides: overrideList,
             snoozed_count: snoozedCount,
           }}
@@ -302,13 +328,13 @@ export default function ViewDetect({
                       {snapshotLabel(r.disp.snapshot)} at snooze
                     </span>
                     {showSimulate && (
-                    <button
-                      onClick={() => simulateWorsening(r.id)}
-                      className="flex min-h-[44px] items-center font-mono text-xs text-slate-400 underline decoration-dotted hover:text-cyan-300"
-                      title="Demo control: pretend the tracked metric slipped, to show re-surfacing"
-                    >
-                      Simulate worsening (demo)
-                    </button>
+                      <button
+                        onClick={() => simulateWorsening(r.id)}
+                        className="flex min-h-[44px] items-center font-mono text-xs text-slate-400 underline decoration-dotted hover:text-cyan-300"
+                        title="Demo control: pretend the tracked metric slipped, to show re-surfacing"
+                      >
+                        Simulate worsening (demo)
+                      </button>
                     )}
                   </>
                 )}
@@ -327,7 +353,8 @@ export default function ViewDetect({
             ))}
           </ul>
           <p className="mt-3 font-mono text-xs text-slate-400">
-            Demo: overrides are kept in this page only. In production they feed the intelligence layer as training signal.
+            Demo: overrides are kept in this page only. In production they feed the intelligence
+            layer as training signal.
           </p>
         </details>
       )}
@@ -343,7 +370,9 @@ export default function ViewDetect({
         </ul>
         <p className="mt-2 font-mono text-xs text-slate-400">
           {data.brand.name} · {fmtEGP(data.brand.monthly_ad_spend_egp)}/mo ad spend · figures{" "}
-          {data.source === "csv" ? "computed from your uploaded CSVs" : "fictional, generated for demo purposes"}
+          {data.source === "csv"
+            ? "computed from your uploaded CSVs"
+            : "fictional, generated for demo purposes"}
         </p>
       </details>
     </div>

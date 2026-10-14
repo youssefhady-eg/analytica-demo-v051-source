@@ -9,7 +9,16 @@ import type { View } from "./ViewShell";
 /** P3-01: two rows max on phones — row 1 wordmark + data badge, row 2 a
  *  horizontally scrollable nav (no wrap, snap). The active tab is scrolled
  *  into view; every target is ≥ 44px (P3-07). */
-export default function SiteNav({ view, onNav, onAsk }: { view: View; onNav: (v: View) => void; onAsk: () => void }) {  const { watchlist } = useDemoData();
+export default function SiteNav({
+  view,
+  onNav,
+  onAsk,
+}: {
+  view: View;
+  onNav: (v: View) => void;
+  onAsk: () => void;
+}) {
+  const { watchlist } = useDemoData();
   const navRef = useRef<HTMLElement>(null);
   const LINKS: { id: View; label: string }[] = [
     { id: "home", label: "Home" },
@@ -36,7 +45,10 @@ export default function SiteNav({ view, onNav, onAsk }: { view: View; onNav: (v:
             onClick={() => onNav("home")}
             className="flex min-h-[44px] items-center text-lg font-bold text-slate-100"
           >
-            Analytica <span className="font-mono text-xs font-normal uppercase tracking-[0.2em] text-cyan-400">· ops</span>
+            Analytica{" "}
+            <span className="font-mono text-xs font-normal uppercase tracking-[0.2em] text-cyan-400">
+              · ops
+            </span>
           </button>
           <div className="ml-auto">
             <DataBadge />
@@ -54,7 +66,9 @@ export default function SiteNav({ view, onNav, onAsk }: { view: View; onNav: (v:
               onClick={() => onNav(l.id)}
               aria-current={view === l.id ? "page" : undefined}
               className={`flex min-h-[44px] flex-none snap-start items-center rounded-md px-3 py-1.5 font-mono text-[13px] font-medium ${
-                view === l.id ? "bg-cyan-400 text-slate-950" : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                view === l.id
+                  ? "bg-cyan-400 text-slate-950"
+                  : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
               }`}
             >
               {l.label}

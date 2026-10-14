@@ -3,12 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import type { DemoData } from "@/lib/types";
 import { sampleData } from "@/lib/data";
-import {
-  getCase,
-  isWorsened,
-  worseningMetric,
-  type WorseningSnapshot,
-} from "@/lib/cases";
+import { getCase, isWorsened, worseningMetric, type WorseningSnapshot } from "@/lib/cases";
 
 /** Phase 2 §7.2 — what the marketer decided about a case. In-memory only
  *  (like the watchlist): lost on reload, reset on dataset change except the
@@ -16,7 +11,13 @@ import {
 export type DismissReason = "already-handled" | "not-now" | "disagree";
 export type Disposition =
   | { kind: "resolved"; at: number; reason: "already-handled" }
-  | { kind: "snoozed"; at: number; reason: "not-now"; snapshot: WorseningSnapshot; resurfaced?: boolean }
+  | {
+      kind: "snoozed";
+      at: number;
+      reason: "not-now";
+      snapshot: WorseningSnapshot;
+      resurfaced?: boolean;
+    }
   | { kind: "override"; at: number; reason: "disagree"; snapshot: WorseningSnapshot };
 
 interface DataCtx {
@@ -112,7 +113,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
     (caseId: string) => setWatchlist((w) => (w.includes(caseId) ? w : [...w, caseId])),
     []
   );
-  const unwatch = useCallback((caseId: string) => setWatchlist((w) => w.filter((x) => x !== caseId)), []);
+  const unwatch = useCallback(
+    (caseId: string) => setWatchlist((w) => w.filter((x) => x !== caseId)),
+    []
+  );
 
   const dismiss = useCallback(
     (caseId: string, reason: DismissReason) => {
@@ -125,9 +129,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
       }
       const snapshot: WorseningSnapshot = { kind: c.kind, value: worseningMetric(c, data) };
       if (reason === "not-now") {
-        setDispositions((prev) => ({ ...prev, [caseId]: { kind: "snoozed", at, reason, snapshot } }));
+        setDispositions((prev) => ({
+          ...prev,
+          [caseId]: { kind: "snoozed", at, reason, snapshot },
+        }));
       } else {
-        setDispositions((prev) => ({ ...prev, [caseId]: { kind: "override", at, reason, snapshot } }));
+        setDispositions((prev) => ({
+          ...prev,
+          [caseId]: { kind: "override", at, reason, snapshot },
+        }));
       }
     },
     [data]
@@ -165,8 +175,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<DataCtx>(
-    () => ({ data, setCsvData, resetSample, watchlist, watch, unwatch, dispositions, dismiss, undoDisposition, simulateWorsening, clearDecisions }),
-    [data, setCsvData, resetSample, watchlist, watch, unwatch, dispositions, dismiss, undoDisposition, simulateWorsening, clearDecisions]
+    () => ({
+      data,
+      setCsvData,
+      resetSample,
+      watchlist,
+      watch,
+      unwatch,
+      dispositions,
+      dismiss,
+      undoDisposition,
+      simulateWorsening,
+      clearDecisions,
+    }),
+    [
+      data,
+      setCsvData,
+      resetSample,
+      watchlist,
+      watch,
+      unwatch,
+      dispositions,
+      dismiss,
+      undoDisposition,
+      simulateWorsening,
+      clearDecisions,
+    ]
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

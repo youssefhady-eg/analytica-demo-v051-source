@@ -31,7 +31,10 @@ function expectClean(bag: ReturnType<typeof watchErrors>) {
 async function startTrack(page: Page, track: "Vondera track" | "Marketer track") {
   await page.getByRole("button", { name: "Present", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Present" })).toBeVisible();
-  await page.getByRole("button", { name: new RegExp(track) }).first().click();
+  await page
+    .getByRole("button", { name: new RegExp(track) })
+    .first()
+    .click();
   await expect(page.getByRole("region", { name: "Presenter coach" })).toBeVisible();
 }
 
@@ -46,7 +49,9 @@ test("vondera track end-to-end on file://", async ({ page }) => {
 
   // 1-2 home.
   await stepTo(page, 1);
-  await expect(page.getByText("Analytica turns Vondera's data into an investigation")).toBeVisible();
+  await expect(
+    page.getByText("Analytica turns Vondera's data into an investigation")
+  ).toBeVisible();
   await expect(page.locator('[data-tour="home-hero"].tour-spotlight')).toBeVisible();
   await page.getByRole("button", { name: "Next" }).click();
 
@@ -131,7 +136,10 @@ test("marketer track end-to-end on file://", async ({ page }) => {
   await page.keyboard.press("Escape");
   // Esc exits mid-tour; the app stays usable with tour state intact.
   await expect(page.getByRole("region", { name: "Presenter coach" })).toHaveCount(0);
-  await page.getByRole("button", { name: /Work it/ }).first().click();
+  await page
+    .getByRole("button", { name: /Work it/ })
+    .first()
+    .click();
   await expect(page.getByRole("button", { name: "Diagnose →" })).toBeVisible();
 
   expectClean(bag);

@@ -24,12 +24,10 @@ export default function Error({
       <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-rose-300">
         Something broke
       </p>
-      <h1 className="mb-2 mt-2 text-2xl font-bold text-slate-50">
-        This view hit an error
-      </h1>
+      <h1 className="mb-2 mt-2 text-2xl font-bold text-slate-50">This view hit an error</h1>
       <p className="mb-6 max-w-md text-slate-400">
-        The demo state is intact — nothing was lost. Retry the view, or reload
-        the page to start from a clean slate.
+        The demo state is intact — nothing was lost. Retry the view, or reload the page to start
+        from a clean slate.
       </p>
       <div className="flex flex-wrap justify-center gap-3">
         <button
@@ -45,9 +43,7 @@ export default function Error({
           Reload page
         </button>
       </div>
-      {error.digest && (
-        <p className="mt-6 font-mono text-xs text-slate-500">ref: {error.digest}</p>
-      )}
+      {error.digest && <p className="mt-6 font-mono text-xs text-slate-500">ref: {error.digest}</p>}
     </div>
   );
 }

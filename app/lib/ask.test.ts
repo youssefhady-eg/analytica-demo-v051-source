@@ -52,8 +52,15 @@ function legitNumbers(s: AskSnapshot): number[] {
   const rc = detectRoasDrop(s.data);
   if (rc) {
     nums.push(
-      rc.dropPct, rc.cpcThen, rc.cpcNow, rc.ctrThen, rc.ctrNow,
-      rc.first.aov_egp, rc.last.aov_egp, rc.failThen, rc.failNow
+      rc.dropPct,
+      rc.cpcThen,
+      rc.cpcNow,
+      rc.ctrThen,
+      rc.ctrNow,
+      rc.first.aov_egp,
+      rc.last.aov_egp,
+      rc.failThen,
+      rc.failNow
     );
     if (rc.culprit) nums.push(rc.culprit.poas, rc.culprit.spend_egp);
   }
@@ -112,11 +119,9 @@ describe("intent examples from the brief table", () => {
 
 describe("status with state", () => {
   test("populated watchlist and log produce countable answers", () => {
-    const s = snapshotAsk(
-      sampleData,
-      ["leak-tiktok-3"],
-      { "money-tiktok-prosp": { kind: "snoozed" } }
-    );
+    const s = snapshotAsk(sampleData, ["leak-tiktok-3"], {
+      "money-tiktok-prosp": { kind: "snoozed" },
+    });
     const a = answerAsk(s, "What did I approve?");
     expect(a.intent).toBe("status");
     expect(a.text).toContain("watching 1");
@@ -149,7 +154,11 @@ describe("action guard", () => {
     expect(isActionRequest("pause that ad")).toBe(true);
     const a = answerAsk(s, "pause that ad");
     expect(a.intent).toBe("action");
-    expect(a.text.startsWith("I can recommend, but I don't take actions on your behalf — here's what I'd do:")).toBe(true);
+    expect(
+      a.text.startsWith(
+        "I can recommend, but I don't take actions on your behalf — here's what I'd do:"
+      )
+    ).toBe(true);
     expect(a.caseId).not.toBeNull();
     for (const f of FORBIDDEN) expect(a.text.includes(f)).toBe(false);
   });
@@ -159,7 +168,11 @@ describe("action guard", () => {
     expect(isActionRequest("approve the top case")).toBe(true);
     const a = answerAsk(s, "approve the top case");
     expect(a.intent).toBe("action");
-    expect(a.text.startsWith("I can recommend, but I don't take actions on your behalf — here's what I'd do:")).toBe(true);
+    expect(
+      a.text.startsWith(
+        "I can recommend, but I don't take actions on your behalf — here's what I'd do:"
+      )
+    ).toBe(true);
     expect(a.caseId).toBe("leak-tiktok-3");
     expect(a.text).toContain("open it");
     for (const f of FORBIDDEN) expect(a.text.includes(f)).toBe(false);
@@ -181,7 +194,12 @@ describe("action guard", () => {
       expect(isActionRequest(q), q).toBe(true);
       const a = answerAsk(s, q);
       expect(a.intent, q).toBe("action");
-      expect(a.text.startsWith("I can recommend, but I don't take actions on your behalf — here's what I'd do:"), q).toBe(true);
+      expect(
+        a.text.startsWith(
+          "I can recommend, but I don't take actions on your behalf — here's what I'd do:"
+        ),
+        q
+      ).toBe(true);
       for (const f of FORBIDDEN) expect(a.text.includes(f), `${q} contains ${f}`).toBe(false);
     }
   });

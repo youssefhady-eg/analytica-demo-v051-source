@@ -31,7 +31,11 @@ export function AnalystProvider({ children }: { children: ReactNode }) {
       if (!apiKey) throw new Error("No API key set.");
       setBusy(true);
       try {
-        return await analystNarrate(stage, caseTitle, metrics, { apiKey, endpoint, model } satisfies LlmOpts);
+        return await analystNarrate(stage, caseTitle, metrics, {
+          apiKey,
+          endpoint,
+          model,
+        } satisfies LlmOpts);
       } finally {
         setBusy(false);
       }
@@ -40,7 +44,18 @@ export function AnalystProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ enabled, setEnabled, apiKey, setApiKey, endpoint, setEndpoint, model, setModel, narrate, busy }),
+    () => ({
+      enabled,
+      setEnabled,
+      apiKey,
+      setApiKey,
+      endpoint,
+      setEndpoint,
+      model,
+      setModel,
+      narrate,
+      busy,
+    }),
     [enabled, apiKey, endpoint, model, narrate, busy]
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
