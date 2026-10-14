@@ -81,7 +81,6 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
           continue;
         }
         setProgress({ phase: `Parsing ${f.label}`, done: 0, total: 1 });
-        // eslint-disable-next-line no-await-in-loop
         const pf: ParsedFile = text.length > CHUNKED_BYTES
           ? await parseCsvLarge(
               f.key,
@@ -111,7 +110,6 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         return;
       }
       setProgress({ phase: "Computing profit, cases and headlines", done: 0, total: 1 });
-      // eslint-disable-next-line no-await-in-loop
       const res = await computeFromCsv(
         tables,
         {
@@ -147,7 +145,6 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
     const t = buildTemplateCsvs(sampleData);
     for (const { key, label } of TEMPLATE_FILES) {
       downloadCsv(label, t[key]);
-      // eslint-disable-next-line no-await-in-loop
       await new Promise((r) => setTimeout(r, 150));
     }
   };
@@ -156,7 +153,6 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
     const t = buildSampleCsvs(sampleData);
     for (const { key, label } of TEMPLATE_FILES) {
       downloadCsv(`sample-${label}`, t[key]);
-      // eslint-disable-next-line no-await-in-loop
       await new Promise((r) => setTimeout(r, 150));
     }
   };

@@ -30,6 +30,10 @@ export default function AnalystNote({
 
   useEffect(() => {
     let cancelled = false;
+    // Reset the live result when the stage/inputs change, then fetch. Clearing
+    // state at the start of an async effect is the intended pattern; the rule
+    // flags it as a false positive here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLiveText(null);
     setLiveError(null);
     if (enabled && apiKey) {

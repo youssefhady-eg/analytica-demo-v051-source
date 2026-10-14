@@ -17,8 +17,8 @@ import {
   parseCsvLarge,
   parseDateValue,
   parseNumValue,
-  type CsvTables,
 } from "./csv";
+import type { CsvTables } from "./types";
 import { computeFromCsv } from "./compute";
 import { buildCases } from "./cases";
 import { buildSampleCsvs } from "./templates";

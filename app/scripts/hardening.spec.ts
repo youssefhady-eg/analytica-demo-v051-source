@@ -86,6 +86,7 @@ test("template downloads work from file://", async ({ page }) => {
 });
 
 test("200k-row export parses without freezing on file://", async ({ page }) => {
+  test.setTimeout(180000);
   const bag = watchErrors(page);
   await gotoUpload(page);
 
@@ -124,4 +125,4 @@ test("200k-row export parses without freezing on file://", async ({ page }) => {
   await page.getByRole("button", { name: /Walk through Big Brand/ }).click();
   await expect(page.getByText("YOUR DATA — Big Brand")).toBeVisible();
   expect(bag).toEqual({ pageErrors: [], consoleErrors: [], failed: [] });
-}, 180000);
+});

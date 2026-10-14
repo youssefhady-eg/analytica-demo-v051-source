@@ -104,11 +104,15 @@ export function TourProvider({
   // null = pinned as absent (falls back to Detect, action skipped).
   const [pinned, setPinned] = useState<Record<string, string | null>>({});
 
-  // Shell's go is a new identity every render — effects use the ref.
+  // Shell's go is a new identity every render — effects read the refs instead.
+  // Writing them in an effect (not during render) keeps the latest callback
+  // without mutating a ref mid-render.
   const goRef = useRef(go);
-  goRef.current = go;
   const askRef = useRef(onAskPanel);
-  askRef.current = onAskPanel;
+  useEffect(() => {
+    goRef.current = go;
+    askRef.current = onAskPanel;
+  }, [go, onAskPanel]);
 
   const active = track !== null;
   const steps = useMemo(() => (track ? trackSteps(track) : []), [track]);
@@ -131,6 +135,8 @@ export function TourProvider({
     if (id === undefined && needsPin) {
       id = resolveTopCase(data, watchlist, dispositions);
       const pinnedId: string | null = id;
+      // Pin on arrival — an intentional state write inside the arrival effect.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPinned((p) => ({ ...p, [raw.id]: pinnedId }));
     }
     const view =
@@ -279,7 +285,7 @@ export function TourProvider({
     <TourCtx.Provider value={value}>
       {children}
       {pickerOpen && <TrackPicker />}
-      {active && step && <CoachPanel />}
+      {active && step && <CoachPanel key={index} />}
     </TourCtx.Provider>
   );
 }
@@ -341,11 +347,9 @@ function CoachPanel() {
   const { track, index, steps, step, ctx, cleanView, setCleanView, next, back, exit, resetDemo } =
     useTour();
   // Q4 follow-up: phones get the compact core; Notes/Clean/Reset live behind
-  // the More toggle. Reset per step so every step starts compact.
+  // the More toggle. The panel is remounted per step (keyed by index below), so
+  // `moreOpen` starts false without a reset effect.
   const [moreOpen, setMoreOpen] = useState(false);
-  useEffect(() => {
-    setMoreOpen(false);
-  }, [index]);
   if (!step) return null;
   const last = index >= steps.length - 1;
   return (
