@@ -15,14 +15,20 @@ overstatement 2.92×.
 
 ## Verify it
 
+Requires **Node 22+** (`app/.nvmrc` pins 22; Vitest 5 and its `vite` dependency
+both require `^22.12.0`).
+
 ```powershell
 cd app
-npm run verify    # static scan → invariants → file:// golden path → 360px no-overflow → both tour tracks → ask panel → hardening fixtures → contrast
-npm test          # Vitest unit (cases, ask engine, csv hardening)
+npm run verify        # static scan → invariants → file:// golden path → 360px no-overflow → both tour tracks → ask panel → hardening fixtures → contrast
+npm test              # Vitest unit (cases, ask engine, csv hardening)
+npm run lint          # ESLint (next/core-web-vitals)
+npm run format:check  # Prettier
+npm run test:coverage # Vitest + v8 coverage (scoped to lib/**)
 ```
 
- phase checkpoints live in chat history; per-phase evidence (screenshots) is
- under `app/docs/shots/phase-N/`; harness scripts live in `app/scripts/`.
+Phase checkpoints live in chat history; per-phase evidence (screenshots) is
+under `app/docs/shots/phase-N/`; harness scripts live in `app/scripts/`.
 
 ## Present it
 
