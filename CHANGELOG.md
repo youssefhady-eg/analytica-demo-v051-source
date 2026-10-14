@@ -39,15 +39,17 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Removed dead code: `analystDiagnose` and `AnalystProvider.ask`.
 - Pinned Node via `engines` and `app/.nvmrc`.
-- **Dependency upgrades (combined Dependabot set).** Next 15 → 16, ESLint 8 →
-  9 with a flat `eslint.config.mjs` (Next 16 removed `next lint`, so `npm run
-  lint` now calls ESLint directly), Tailwind 3 → 4 via `@tailwindcss/postcss`
-  (the PostCSS plugin moved out of the `tailwindcss` package; `autoprefixer`
-  is no longer needed), Vitest 4 → 5, `@types/node` 20 → 26, and the CI
-  `actions/checkout`/`actions/setup-node` bumps. React stays on 18: Next 16
-  supports it (with a deprecation warning), while `@tremor/react` — a
-  dependency of the dashboard — still requires React 18, so React 19 is
-  deferred until Tremor ships a stable React 19 release.
+- **Dependency upgrades (combined Dependabot set).** Next 15 → 16, React 18 →
+  19 (see below), ESLint 8 → 9 with a flat `eslint.config.mjs` (Next 16 removed
+  `next lint`, so `npm run lint` now calls ESLint directly), Tailwind 3 → 4 via
+  `@tailwindcss/postcss` (the PostCSS plugin moved out of the `tailwindcss`
+  package; `autoprefixer` is no longer needed), Vitest 4 → 5, `@types/node`
+  20 → 26, and the CI `actions/checkout`/`actions/setup-node` bumps.
+- **React 19 enabled by dropping the dead `@tremor/react` dependency.** Tremor
+  was only referenced by a stale Tailwind `content` glob; no source file
+  imported it — `components/ui.tsx` provides the drop-in primitives. With it
+  gone (and `echarts-for-react`, which peers `react >=16`, already React
+  19-ready) React 18 → 19 is unblocked.
 
 ## [0.1.0]
 
