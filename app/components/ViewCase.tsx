@@ -54,6 +54,8 @@ export default function ViewCase({
   useEffect(() => {
     const s = tour.active ? tour.step : null;
     if (s && c && typeof s.view !== "string" && s.view.case === c.id && s.stage) {
+      // The tour drives the stage on arrival — a deliberate sync from context.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStage(s.stage);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

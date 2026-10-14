@@ -73,6 +73,9 @@ export default function AskPanel({
 
   // Answers reference live numbers — a dataset change retires them.
   useEffect(() => {
+    // Deliberate reset on dataset change; the rule flags synchronous setState
+    // in effects, but retiring stale answers is the intent.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMessages([]);
     setInput("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
