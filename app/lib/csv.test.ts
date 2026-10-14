@@ -12,12 +12,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
-import {
-  parseCsv,
-  parseCsvLarge,
-  parseDateValue,
-  parseNumValue,
-} from "./csv";
+import { parseCsv, parseCsvLarge, parseDateValue, parseNumValue } from "./csv";
 import type { CsvTables } from "./types";
 import { computeFromCsv } from "./compute";
 import { buildCases } from "./cases";
@@ -27,7 +22,10 @@ import { sampleData } from "./data";
 const FIX = join(__dirname, "..", "scripts", "fixtures", "csv");
 const read = (n: string): string => readFileSync(join(FIX, n), "utf8");
 
-function tables(spendFile: string, ordersFile: string): { t: CsvTables; rows: Record<string, number[]> } {
+function tables(
+  spendFile: string,
+  ordersFile: string
+): { t: CsvTables; rows: Record<string, number[]> } {
   const spend = parseCsv("spend", read(spendFile));
   const orders = parseCsv("orders", read(ordersFile));
   expect(spend.errors).toEqual([]);
@@ -166,7 +164,9 @@ describe("fixture behaviors (P6-01…P6-05)", () => {
     const keep = stale.rows.filter(
       (r, i) =>
         !badLines.has(stale.rowNums[i]) &&
-        ["delivered", "refused", "rto", "cancelled"].includes((r["courier_status"] ?? "").toLowerCase())
+        ["delivered", "refused", "rto", "cancelled"].includes(
+          (r["courier_status"] ?? "").toLowerCase()
+        )
     );
     const res = await computeFromCsv(
       { spend: spend.rows, orders: keep, ads: [], daily: [], funnel: [] },
@@ -201,8 +201,14 @@ describe("fixture behaviors (P6-01…P6-05)", () => {
       ...t,
       ads: [
         {
-          ad_id: "a1", ad_name: "Ad One", adset_id: "p1", spend_egp: "1000",
-          platform_roas: "3.0", frequency: "2.0", ctr_14d_ago: "2.0", ctr_now: "2.0",
+          ad_id: "a1",
+          ad_name: "Ad One",
+          adset_id: "p1",
+          spend_egp: "1000",
+          platform_roas: "3.0",
+          frequency: "2.0",
+          ctr_14d_ago: "2.0",
+          ctr_now: "2.0",
         },
       ],
     };
@@ -319,7 +325,10 @@ describe("parseCsvLarge (chunked path)", () => {
   });
 
   test("reports an empty file as no data rows", async () => {
-    const pf = await parseCsvLarge("spend", "adset_id,adset_name,channel,spend_egp,platform_roas\n");
+    const pf = await parseCsvLarge(
+      "spend",
+      "adset_id,adset_name,channel,spend_egp,platform_roas\n"
+    );
     expect(pf.rows).toHaveLength(0);
     expect(pf.errors.join("\n")).toMatch(/no data rows found/i);
   });

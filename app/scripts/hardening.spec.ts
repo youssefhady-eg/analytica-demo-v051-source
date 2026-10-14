@@ -100,7 +100,9 @@ test("200k-row export parses without freezing on file://", async ({ page }) => {
   const small = {
     name: "spend.csv",
     mimeType: "text/csv",
-    buffer: Buffer.from("adset_id,adset_name,channel,spend_egp,platform_roas\np1,Big One,meta,100000,3.0\n"),
+    buffer: Buffer.from(
+      "adset_id,adset_name,channel,spend_egp,platform_roas\np1,Big One,meta,100000,3.0\n"
+    ),
   };
   const files = page.locator('input[type="file"]');
   await files.nth(0).setInputFiles(small);
@@ -120,7 +122,9 @@ test("200k-row export parses without freezing on file://", async ({ page }) => {
   await expect(page.getByText(/Parsing|Computing/)).toBeVisible({ timeout: 15000 });
   await page.getByPlaceholder("e.g. InYourShoe").fill("Big Brand live");
   await expect(page.getByPlaceholder("e.g. InYourShoe")).toHaveValue("Big Brand live");
-  await expect(page.getByRole("button", { name: /Walk through Big Brand/ })).toBeVisible({ timeout: 120000 });
+  await expect(page.getByRole("button", { name: /Walk through Big Brand/ })).toBeVisible({
+    timeout: 120000,
+  });
   await expect(page.getByText(/200,000 rows/)).toBeVisible();
   await page.getByRole("button", { name: /Walk through Big Brand/ }).click();
   await expect(page.getByText("YOUR DATA — Big Brand")).toBeVisible();

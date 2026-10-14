@@ -63,9 +63,17 @@ expected.forEach((e, i) => {
 // Spot-check the brief's parenthetical ground truth (rates, ROAS pairs, submitters).
 check("rank1 detail has 8.1%", cases[0]?.detail.includes("8.1%"), true);
 check("rank1 detail has 4.6%", cases[0]?.detail.includes("4.6%"), true);
-check("rank2 detail 2.90× vs 0.82×", cases[1]?.detail.includes("2.90") && cases[1]?.detail.includes("0.82"), true);
+check(
+  "rank2 detail 2.90× vs 0.82×",
+  cases[1]?.detail.includes("2.90") && cases[1]?.detail.includes("0.82"),
+  true
+);
 check("rank3 Sara submitter", cases[2]?.submittedBy?.includes("Sara"), true);
-check("rank3 detail 3.80× vs 0.81×", cases[2]?.detail.includes("3.80") && cases[2]?.detail.includes("0.81"), true);
+check(
+  "rank3 detail 3.80× vs 0.81×",
+  cases[2]?.detail.includes("3.80") && cases[2]?.detail.includes("0.81"),
+  true
+);
 check("rank4 Ahmed submitter", cases[3]?.submittedBy?.includes("Ahmed"), true);
 check("rank4 title has 14%", cases[3]?.title.includes("14%"), true);
 

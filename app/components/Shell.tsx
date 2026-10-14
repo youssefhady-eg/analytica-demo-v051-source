@@ -41,32 +41,33 @@ export default function Shell() {
         <TourProvider go={go} onAskPanel={() => setAskOpen(true)}>
           <SiteNav view={navView} onNav={go} onAsk={() => setAskOpen(true)} />
           <main className="mx-auto max-w-6xl px-4 py-8">
-          {view === "home" && <ViewHome onNav={(v) => go(v)} />}
-          {view === "detect" && (
-            <ViewDetect
-              onOpenCase={(id) => go({ case: id })}
-              onVerify={() => go("verify")}
-              onUpload={() => go("upload")}
-            />
-          )}
-          {view === "upload" && <ViewUpload onDone={() => go("detect")} />}
-          {view === "verify" && (
-            <ViewVerify onDetect={() => go("detect")} onOpenCase={(id) => go({ case: id })} />
-          )}
-          {typeof view !== "string" && (
-            <ViewCase
-              key={view.case}
-              caseId={view.case}
-              onBack={() => go("detect")}
-              onVerify={() => go("verify")}
-              onUpload={() => go("upload")}
-            />
-          )}
-        </main>
-        <footer className="mx-auto max-w-6xl px-4 pb-28 font-mono text-xs text-slate-400">
-          Analytica product sample — figures are fictional in sample mode, computed from your CSVs in upload mode.
-        </footer>
-        <AiToggle lift={typeof view !== "string"} />
+            {view === "home" && <ViewHome onNav={(v) => go(v)} />}
+            {view === "detect" && (
+              <ViewDetect
+                onOpenCase={(id) => go({ case: id })}
+                onVerify={() => go("verify")}
+                onUpload={() => go("upload")}
+              />
+            )}
+            {view === "upload" && <ViewUpload onDone={() => go("detect")} />}
+            {view === "verify" && (
+              <ViewVerify onDetect={() => go("detect")} onOpenCase={(id) => go({ case: id })} />
+            )}
+            {typeof view !== "string" && (
+              <ViewCase
+                key={view.case}
+                caseId={view.case}
+                onBack={() => go("detect")}
+                onVerify={() => go("verify")}
+                onUpload={() => go("upload")}
+              />
+            )}
+          </main>
+          <footer className="mx-auto max-w-6xl px-4 pb-28 font-mono text-xs text-slate-400">
+            Analytica product sample — figures are fictional in sample mode, computed from your CSVs
+            in upload mode.
+          </footer>
+          <AiToggle lift={typeof view !== "string"} />
           <AskPanel
             open={askOpen}
             onClose={() => setAskOpen(false)}

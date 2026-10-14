@@ -3,12 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDemoData } from "./DataProvider";
 import { useAnalyst } from "./AnalystProvider";
-import {
-  answerAsk,
-  snapshotAsk,
-  suggestedChips,
-  type AskAnswer,
-} from "@/lib/ask";
+import { answerAsk, snapshotAsk, suggestedChips, type AskAnswer } from "@/lib/ask";
 import { analystAsk, type AskBundle } from "@/lib/llm";
 import { buildCases } from "@/lib/cases";
 
@@ -27,7 +22,9 @@ function buildBundle(
 ): AskBundle {
   const spend = data.adsets.reduce((x, a) => x + a.spend_egp, 0);
   const profit = data.adsets.reduce((x, a) => x + a.profit_egp, 0);
-  const roas = spend ? data.adsets.reduce((x, a) => x + a.platform_roas * a.spend_egp, 0) / spend : 0;
+  const roas = spend
+    ? data.adsets.reduce((x, a) => x + a.platform_roas * a.spend_egp, 0) / spend
+    : 0;
   const poas = spend ? profit / spend : 0;
   return {
     headlines: {
@@ -78,7 +75,6 @@ export default function AskPanel({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMessages([]);
     setInput("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.source, data.brand.name]);
 
   useEffect(() => {
@@ -184,9 +180,9 @@ export default function AskPanel({
               Computed metrics only — headlines, case titles, counts. Never raw rows.
             </p>
             <p className="mt-2 text-sm text-amber-300/90">
-              ⚠ Live mode is unverified in this build. Answers come from the model
-              you configured and are not checked against the rules engine — treat
-              them as narration, not as a source of new numbers.
+              ⚠ Live mode is unverified in this build. Answers come from the model you configured
+              and are not checked against the rules engine — treat them as narration, not as a
+              source of new numbers.
             </p>
             <pre className="mt-2 overflow-x-auto rounded-md bg-black/30 p-2 font-mono text-xs text-slate-300">
               {JSON.stringify(buildBundle(data, snapshot), null, 2)}

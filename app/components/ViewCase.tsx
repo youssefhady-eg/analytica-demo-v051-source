@@ -1,7 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Text, Title, Table, TableHead, TableRow, TableHeaderCell, TableBody, TableCell, Eyebrow } from "@/components/ui";
+import {
+  Card,
+  Text,
+  Title,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeaderCell,
+  TableBody,
+  TableCell,
+  Eyebrow,
+} from "@/components/ui";
 import { useDemoData, type DismissReason, type Disposition } from "@/components/DataProvider";
 import { useTour } from "@/components/TourProvider";
 import { getCase, evidenceLayers, casePlan, type CaseItem } from "@/lib/cases";
@@ -66,7 +77,10 @@ export default function ViewCase({
       <div className="mx-auto max-w-2xl py-16 text-center">
         <Title>Case not found</Title>
         <Text className="mt-2">It may have cleared — or the dataset changed.</Text>
-        <button onClick={onBack} className="mt-4 inline-block rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 min-h-[44px]">
+        <button
+          onClick={onBack}
+          className="mt-4 inline-block rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 min-h-[44px]"
+        >
           ← Back to triage
         </button>
       </div>
@@ -118,14 +132,15 @@ export default function ViewCase({
   // case is open; layers peel on arrival. Untouched when no tour is active.
   const tourStep = tour.active ? tour.step : null;
   const tourHere =
-    tourStep && typeof tourStep.view !== "string" && tourStep.view.case === c.id
-      ? tourStep
-      : null;
+    tourStep && typeof tourStep.view !== "string" && tourStep.view.case === c.id ? tourStep : null;
   const shownRevealed = tourHere?.revealLayers ? layers.length : revealed;
 
   return (
     <div className="pb-24 md:pb-0">
-      <button onClick={onBack} className="flex min-h-[44px] items-center font-mono text-[13px] font-medium text-cyan-300 hover:underline">
+      <button
+        onClick={onBack}
+        className="flex min-h-[44px] items-center font-mono text-[13px] font-medium text-cyan-300 hover:underline"
+      >
         ← Triage
       </button>
       <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -149,13 +164,12 @@ export default function ViewCase({
         </p>
       )}
 
-      <Stepper
-        current={stage}
-        onGo={goStage}
-        allowVerify={isWatching}
-      />
+      <Stepper current={stage} onGo={goStage} allowVerify={isWatching} />
       <div className="mb-6 flex justify-end">
-        <button onClick={onVerify} className="flex min-h-[44px] items-center font-mono text-[13px] font-medium text-slate-400 hover:text-cyan-300">
+        <button
+          onClick={onVerify}
+          className="flex min-h-[44px] items-center font-mono text-[13px] font-medium text-slate-400 hover:text-cyan-300"
+        >
           Watchlist ({watchlist.length}) →
         </button>
       </div>
@@ -166,7 +180,10 @@ export default function ViewCase({
           caseTitle={c.title}
           metrics={
             stage === "diagnose"
-              ? narrationMetrics(stage, c, data, { revealed: shownRevealed, totalLayers: layers.length })
+              ? narrationMetrics(stage, c, data, {
+                  revealed: shownRevealed,
+                  totalLayers: layers.length,
+                })
               : narrationMetrics(stage, c, data)
           }
           rulesText={
@@ -191,20 +208,33 @@ export default function ViewCase({
           bar (safe-area aware); from md up it is the plain inline row. */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f18]/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur md:static md:z-auto md:mt-8 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-        {FLOW.indexOf(stage) > 0 ? (
-          <button onClick={back} className="flex min-h-[44px] items-center rounded-lg border border-white/15 px-5 py-2.5 font-mono text-sm font-medium text-slate-300 hover:bg-white/5">
-            ← Back
-          </button>
-        ) : <span />}
-        {FLOW.indexOf(stage) < FLOW.length - 1 ? (
-          <button onClick={next} className="flex min-h-[44px] items-center rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:bg-cyan-300">
-            {stage === "isolate" ? "Diagnose →" : "Decide →"}
-          </button>
-        ) : isWatching ? (
-          <button onClick={onVerify} className="flex min-h-[44px] items-center rounded-lg bg-emerald-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 hover:bg-emerald-300">
-            Open the watchlist →
-          </button>
-        ) : <span />}
+          {FLOW.indexOf(stage) > 0 ? (
+            <button
+              onClick={back}
+              className="flex min-h-[44px] items-center rounded-lg border border-white/15 px-5 py-2.5 font-mono text-sm font-medium text-slate-300 hover:bg-white/5"
+            >
+              ← Back
+            </button>
+          ) : (
+            <span />
+          )}
+          {FLOW.indexOf(stage) < FLOW.length - 1 ? (
+            <button
+              onClick={next}
+              className="flex min-h-[44px] items-center rounded-lg bg-cyan-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:bg-cyan-300"
+            >
+              {stage === "isolate" ? "Diagnose →" : "Decide →"}
+            </button>
+          ) : isWatching ? (
+            <button
+              onClick={onVerify}
+              className="flex min-h-[44px] items-center rounded-lg bg-emerald-400 px-5 py-2.5 font-mono text-sm font-bold text-slate-950 hover:bg-emerald-300"
+            >
+              Open the watchlist →
+            </button>
+          ) : (
+            <span />
+          )}
         </div>
       </div>
     </div>
@@ -212,10 +242,24 @@ export default function ViewCase({
 }
 
 function stageLabel(s: Stage): string {
-  return { detect: "Detect", isolate: "Isolate", diagnose: "Diagnose", decide: "Decide", verify: "Verify" }[s];
+  return {
+    detect: "Detect",
+    isolate: "Isolate",
+    diagnose: "Diagnose",
+    decide: "Decide",
+    verify: "Verify",
+  }[s];
 }
 
-function IsolateStage({ c, onUpload, onBack }: { c: CaseItem; onUpload: () => void; onBack: () => void }) {
+function IsolateStage({
+  c,
+  onUpload,
+  onBack,
+}: {
+  c: CaseItem;
+  onUpload: () => void;
+  onBack: () => void;
+}) {
   const { data } = useDemoData();
   return (
     <div data-tour="isolate-evidence" className="space-y-6">
@@ -232,9 +276,17 @@ function IsolateStage({ c, onUpload, onBack }: { c: CaseItem; onUpload: () => vo
       )}
       {c.kind === "funnel-leak" && c.channel && (
         <Card className="p-5">
-          <FunnelChart funnel={data.funnel} channel={c.channel} title={`${channelLabel(c.channel)} — funnel`} />
+          <FunnelChart
+            funnel={data.funnel}
+            channel={c.channel}
+            title={`${channelLabel(c.channel)} — funnel`}
+          />
           <Text className="mt-2">
-            The bleed is at <span className="font-semibold text-slate-200">{stepLabel((c.stepIdx ?? 1) - 1)} → {stepLabel(c.stepIdx ?? 1)}</span>. The other steps hold.
+            The bleed is at{" "}
+            <span className="font-semibold text-slate-200">
+              {stepLabel((c.stepIdx ?? 1) - 1)} → {stepLabel(c.stepIdx ?? 1)}
+            </span>
+            . The other steps hold.
           </Text>
         </Card>
       )}
@@ -243,7 +295,10 @@ function IsolateStage({ c, onUpload, onBack }: { c: CaseItem; onUpload: () => vo
           <MarginDecomposition adsetId={c.adsetId} />
           <Card className="p-5">
             <Title>Their number vs the true number</Title>
-            <p className="mb-1 mt-3 text-right font-mono text-xs text-slate-400 sm:hidden" aria-hidden="true">
+            <p
+              className="mb-1 mt-3 text-right font-mono text-xs text-slate-400 sm:hidden"
+              aria-hidden="true"
+            >
               scroll →
             </p>
             <Table className="sticky-first min-w-[560px]">
@@ -257,15 +312,31 @@ function IsolateStage({ c, onUpload, onBack }: { c: CaseItem; onUpload: () => vo
                 </TableRow>
               </TableHead>
               <TableBody>
-                {[...data.adsets].sort((a, b) => b.gap - a.gap).map((a) => (
-                  <TableRow key={a.id} className={a.id === c.adsetId ? "bg-rose-500/10" : ""}>
-                    <TableCell className="font-medium text-slate-200">{a.name}</TableCell>
-                    <TableCell className="font-mono tabular-nums">{fmtEGP(a.spend_egp)}</TableCell>
-                    <TableCell className="font-mono tabular-nums">{fmtX(a.platform_roas)}</TableCell>
-                    <TableCell className={a.true_poas < 1 ? "font-mono font-semibold tabular-nums text-rose-400" : "font-mono tabular-nums"}>{fmtX(a.true_poas)}</TableCell>
-                    <TableCell className="font-mono font-semibold tabular-nums text-rose-400">+{a.gap.toFixed(2)}×</TableCell>
-                  </TableRow>
-                ))}
+                {[...data.adsets]
+                  .sort((a, b) => b.gap - a.gap)
+                  .map((a) => (
+                    <TableRow key={a.id} className={a.id === c.adsetId ? "bg-rose-500/10" : ""}>
+                      <TableCell className="font-medium text-slate-200">{a.name}</TableCell>
+                      <TableCell className="font-mono tabular-nums">
+                        {fmtEGP(a.spend_egp)}
+                      </TableCell>
+                      <TableCell className="font-mono tabular-nums">
+                        {fmtX(a.platform_roas)}
+                      </TableCell>
+                      <TableCell
+                        className={
+                          a.true_poas < 1
+                            ? "font-mono font-semibold tabular-nums text-rose-400"
+                            : "font-mono tabular-nums"
+                        }
+                      >
+                        {fmtX(a.true_poas)}
+                      </TableCell>
+                      <TableCell className="font-mono font-semibold tabular-nums text-rose-400">
+                        +{a.gap.toFixed(2)}×
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </Card>
@@ -274,7 +345,10 @@ function IsolateStage({ c, onUpload, onBack }: { c: CaseItem; onUpload: () => vo
       )}
       {/* P1-07: quiet way back — forward momentum stays primary. */}
       <div>
-        <button onClick={onBack} className="flex min-h-[44px] items-center font-mono text-[13px] text-slate-400 hover:text-cyan-300 hover:underline">
+        <button
+          onClick={onBack}
+          className="flex min-h-[44px] items-center font-mono text-[13px] text-slate-400 hover:text-cyan-300 hover:underline"
+        >
           ← Back to triage
         </button>
       </div>
@@ -301,7 +375,8 @@ function MarginDecomposition({ adsetId }: { adsetId: string }) {
     <Card className="p-5">
       <Title>Where the margin goes</Title>
       <Text className="mt-1">
-        {a.name} turns {fmtEGP(revenue)} of revenue into {fmtEGP(profit)} of profit on {fmtEGP(a.spend_egp)} of spend — true POAS {fmtX(a.true_poas)}.
+        {a.name} turns {fmtEGP(revenue)} of revenue into {fmtEGP(profit)} of profit on{" "}
+        {fmtEGP(a.spend_egp)} of spend — true POAS {fmtX(a.true_poas)}.
       </Text>
       <div className="mt-4 flex h-4 w-full overflow-hidden rounded-full ring-1 ring-white/10">
         {segs.map((s) => (
@@ -317,7 +392,10 @@ function MarginDecomposition({ adsetId }: { adsetId: string }) {
         {segs.map((s, i) => (
           <li key={s.label} className="flex items-center gap-2 text-sm">
             <span className={`h-2.5 w-2.5 shrink-0 rounded-sm ${s.cls}`} />
-            <span className="text-slate-400">{i === segs.length - 1 ? "= " : ""}{s.label}</span>
+            <span className="text-slate-400">
+              {i === segs.length - 1 ? "= " : ""}
+              {s.label}
+            </span>
             <span className="ml-auto font-mono tabular-nums text-slate-200">{fmtEGP(s.value)}</span>
           </li>
         ))}
@@ -332,14 +410,25 @@ const SOURCE_STYLE: Record<string, string> = {
   input: "bg-white/5 text-slate-400 ring-1 ring-white/10",
 };
 
-function DiagnoseStage({ c, revealed, setRevealed }: { c: CaseItem; revealed: number; setRevealed: (n: number) => void }) {
+function DiagnoseStage({
+  c,
+  revealed,
+  setRevealed,
+}: {
+  c: CaseItem;
+  revealed: number;
+  setRevealed: (n: number) => void;
+}) {
   const { data } = useDemoData();
   const layers = evidenceLayers(c, data);
   const allRevealed = revealed >= layers.length;
 
   const gapStage = (() => {
     if (c.kind !== "funnel-leak" || c.stepIdx === null) return null;
-    const key = STAGE_KEY[`${["session", "add_to_cart", "checkout", "purchase"][c.stepIdx - 1]}>${["session", "add_to_cart", "checkout", "purchase"][c.stepIdx]}`];
+    const key =
+      STAGE_KEY[
+        `${["session", "add_to_cart", "checkout", "purchase"][c.stepIdx - 1]}>${["session", "add_to_cart", "checkout", "purchase"][c.stepIdx]}`
+      ];
     return key ? data.gaps.stages[key] : null;
   })();
 
@@ -348,9 +437,14 @@ function DiagnoseStage({ c, revealed, setRevealed }: { c: CaseItem; revealed: nu
   return (
     <div data-tour="diagnose-layers" className="space-y-4">
       {layers.slice(0, revealed).map((l, i) => (
-        <Card key={i} className={`border-l-2 p-5 ${l.verdict === "ok" ? "border-l-emerald-400" : "border-l-rose-500"}`}>
+        <Card
+          key={i}
+          className={`border-l-2 p-5 ${l.verdict === "ok" ? "border-l-emerald-400" : "border-l-rose-500"}`}
+        >
           <p className="flex flex-wrap items-center gap-2">
-            <span className={`rounded-full px-2 py-0.5 font-mono text-xs font-bold ${l.verdict === "ok" ? "bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/40"}`}>
+            <span
+              className={`rounded-full px-2 py-0.5 font-mono text-xs font-bold ${l.verdict === "ok" ? "bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/40"}`}
+            >
               {l.verdict === "ok" ? "OK" : "PROBLEM"}
             </span>
           </p>
@@ -371,21 +465,32 @@ function DiagnoseStage({ c, revealed, setRevealed }: { c: CaseItem; revealed: nu
         <>
           {rc?.culprit && (
             <Card className="border-rose-500/40 bg-rose-500/[0.06] p-5">
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-rose-400">Culprit · rules-detected</p>
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-rose-400">
+                Culprit · rules-detected
+              </p>
               <Title className="mt-1">{rc.culprit.ad_name}</Title>
               <Text className="mt-2">
-                {rc.culpritFlags.join(" + ").toLowerCase()} — at {rc.culprit.poas.toFixed(2)}× profit POAS, the ad set&apos;s worst earner.
+                {rc.culpritFlags.join(" + ").toLowerCase()} — at {rc.culprit.poas.toFixed(2)}×
+                profit POAS, the ad set&apos;s worst earner.
               </Text>
             </Card>
           )}
           {gapStage && (
             <Card className="p-5">
-              <Title>Likely causes — {gapStage.label} <span className="text-xs font-normal text-slate-400">(heuristic)</span></Title>
+              <Title>
+                Likely causes — {gapStage.label}{" "}
+                <span className="text-xs font-normal text-slate-400">(heuristic)</span>
+              </Title>
               <Text className="mt-1">{gapStage.likely_meaning}</Text>
               <ul className="mt-4 space-y-3">
                 {gapStage.checklist.map((item) => (
-                  <li key={item.gap} className="flex items-start gap-3 rounded-lg bg-white/[0.03] p-3 ring-1 ring-white/5">
-                    <span className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 font-mono text-xs font-semibold ${SOURCE_STYLE[item.source]}`}>
+                  <li
+                    key={item.gap}
+                    className="flex items-start gap-3 rounded-lg bg-white/[0.03] p-3 ring-1 ring-white/5"
+                  >
+                    <span
+                      className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 font-mono text-xs font-semibold ${SOURCE_STYLE[item.source]}`}
+                    >
                       {item.source}
                     </span>
                     <div>
@@ -397,16 +502,21 @@ function DiagnoseStage({ c, revealed, setRevealed }: { c: CaseItem; revealed: nu
               </ul>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border border-cyan-400/25 bg-cyan-400/[0.05] p-3">
-                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">Recover now</p>
+                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
+                    Recover now
+                  </p>
                   <p className="mt-1 text-sm text-slate-300">{gapStage.recover}</p>
                 </div>
                 <div className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
-                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Fix the cause</p>
+                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    Fix the cause
+                  </p>
                   <p className="mt-1 text-sm text-slate-300">{gapStage.fix_cause}</p>
                 </div>
               </div>
               <Text className="mt-3 text-xs">
-                Heuristic checklist — the data pinpoints <em>where</em> the leak is; confirming <em>which</em> cause is real takes a look.
+                Heuristic checklist — the data pinpoints <em>where</em> the leak is; confirming{" "}
+                <em>which</em> cause is real takes a look.
               </Text>
             </Card>
           )}
@@ -430,11 +540,24 @@ function dismissSentence(reason: DismissReason): string {
 }
 
 /** P2 §7.5: plan status pills — existing pill classes reused. */
-function planPill(isWatching: boolean, disp: Disposition | undefined): { text: string; cls: string } {
-  if (isWatching) return { text: "APPROVED · WATCHING", cls: "bg-emerald-400/15 text-emerald-300 ring-1 ring-emerald-400/40" };
-  if (!disp) return { text: "PENDING APPROVAL", cls: "bg-amber-400/15 text-amber-300 ring-1 ring-amber-400/40" };
-  if (disp.kind === "resolved") return { text: "RESOLVED", cls: "bg-white/5 text-slate-400 ring-1 ring-white/15" };
-  if (disp.kind === "snoozed") return { text: "SNOOZED", cls: "bg-white/5 text-slate-400 ring-1 ring-white/15" };
+function planPill(
+  isWatching: boolean,
+  disp: Disposition | undefined
+): { text: string; cls: string } {
+  if (isWatching)
+    return {
+      text: "APPROVED · WATCHING",
+      cls: "bg-emerald-400/15 text-emerald-300 ring-1 ring-emerald-400/40",
+    };
+  if (!disp)
+    return {
+      text: "PENDING APPROVAL",
+      cls: "bg-amber-400/15 text-amber-300 ring-1 ring-amber-400/40",
+    };
+  if (disp.kind === "resolved")
+    return { text: "RESOLVED", cls: "bg-white/5 text-slate-400 ring-1 ring-white/15" };
+  if (disp.kind === "snoozed")
+    return { text: "SNOOZED", cls: "bg-white/5 text-slate-400 ring-1 ring-white/15" };
   return { text: "OVERRIDE LOGGED", cls: "bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/30" };
 }
 
@@ -459,7 +582,10 @@ function DecideStage({
 
   return (
     <div className="space-y-4">
-      <div data-tour="decide-plan" className="rounded-xl border border-cyan-400/25 bg-gradient-to-br from-cyan-400/[0.06] to-transparent p-5">
+      <div
+        data-tour="decide-plan"
+        className="rounded-xl border border-cyan-400/25 bg-gradient-to-br from-cyan-400/[0.06] to-transparent p-5"
+      >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">
             Action plan — where to focus
@@ -470,7 +596,10 @@ function DecideStage({
         </div>
         <ol className="space-y-3">
           {plan.map((s, i) => (
-            <li key={i} className="flex items-start gap-4 rounded-lg bg-white/[0.03] p-4 ring-1 ring-white/5">
+            <li
+              key={i}
+              className="flex items-start gap-4 rounded-lg bg-white/[0.03] p-4 ring-1 ring-white/5"
+            >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-400 font-mono text-sm font-bold text-slate-950">
                 {i + 1}
               </span>
@@ -486,10 +615,16 @@ function DecideStage({
         </ol>
         {!isWatching && !disp && !asking && (
           <div className="mt-4 flex gap-2">
-            <button onClick={onApprove} className="flex min-h-[44px] items-center rounded-md bg-cyan-400 px-4 py-2 font-mono text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:bg-cyan-300">
+            <button
+              onClick={onApprove}
+              className="flex min-h-[44px] items-center rounded-md bg-cyan-400 px-4 py-2 font-mono text-sm font-bold text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:bg-cyan-300"
+            >
               Approve plan
             </button>
-            <button onClick={() => setAsking(true)} className="flex min-h-[44px] items-center rounded-md border border-white/15 px-4 py-2 font-mono text-sm font-medium text-slate-300 hover:bg-white/5">
+            <button
+              onClick={() => setAsking(true)}
+              className="flex min-h-[44px] items-center rounded-md border border-white/15 px-4 py-2 font-mono text-sm font-medium text-slate-300 hover:bg-white/5"
+            >
               Dismiss
             </button>
           </div>
@@ -509,7 +644,10 @@ function DecideStage({
                 {r.label}
               </button>
             ))}
-            <button onClick={() => setAsking(false)} className="flex min-h-[44px] items-center px-2 py-2 font-mono text-sm text-slate-400 hover:text-slate-300">
+            <button
+              onClick={() => setAsking(false)}
+              className="flex min-h-[44px] items-center px-2 py-2 font-mono text-sm text-slate-400 hover:text-slate-300"
+            >
               Cancel
             </button>
           </div>
@@ -518,10 +656,16 @@ function DecideStage({
           <div className="mt-4">
             <p className="text-sm text-slate-200">{dismissSentence(disp.reason)}</p>
             <div className="mt-3 flex gap-2">
-              <button onClick={() => undoDisposition(c.id)} className="flex min-h-[44px] items-center rounded-md border border-white/15 px-4 py-2 font-mono text-sm font-medium text-slate-300 hover:bg-white/5">
+              <button
+                onClick={() => undoDisposition(c.id)}
+                className="flex min-h-[44px] items-center rounded-md border border-white/15 px-4 py-2 font-mono text-sm font-medium text-slate-300 hover:bg-white/5"
+              >
                 Undo
               </button>
-              <button onClick={onBack} className="flex min-h-[44px] items-center rounded-md px-4 py-2 font-mono text-sm font-medium text-cyan-300 hover:underline">
+              <button
+                onClick={onBack}
+                className="flex min-h-[44px] items-center rounded-md px-4 py-2 font-mono text-sm font-medium text-cyan-300 hover:underline"
+              >
                 ← Back to triage
               </button>
             </div>
@@ -529,11 +673,13 @@ function DecideStage({
         )}
         {isWatching && (
           <p className="mt-4 text-sm text-emerald-300">
-            Approved — this case is on the watchlist. In production the plan would execute now and I&apos;d track the recovery.
+            Approved — this case is on the watchlist. In production the plan would execute now and
+            I&apos;d track the recovery.
           </p>
         )}
         <p className="mt-3 font-mono text-xs text-slate-400">
-          Demo: approval is recorded locally. In production this queues the actions for execution via the ecosystem (VPal / apps).
+          Demo: approval is recorded locally. In production this queues the actions for execution
+          via the ecosystem (VPal / apps).
         </p>
       </div>
     </div>

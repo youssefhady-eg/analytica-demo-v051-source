@@ -30,14 +30,7 @@ export function normalize(q: string): string {
 }
 
 export type AskIntent =
-  | "focus"
-  | "lie"
-  | "leak"
-  | "drop"
-  | "profit"
-  | "status"
-  | "compare"
-  | "help";
+  "focus" | "lie" | "leak" | "drop" | "profit" | "status" | "compare" | "help";
 
 export interface AskSnapshot {
   data: DemoData;
@@ -56,9 +49,7 @@ export function snapshotAsk(
   dispositions: Record<string, DispositionStatus>
 ): AskSnapshot {
   const waiting = waitingCases(data, watchlist, dispositions);
-  const watched = watchlist
-    .map((id) => getCase(data, id))
-    .filter((c): c is CaseItem => c !== null);
+  const watched = watchlist.map((id) => getCase(data, id)).filter((c): c is CaseItem => c !== null);
   const handled = Object.entries(dispositions)
     .filter(([, d]) => d.kind === "resolved" || d.kind === "snoozed" || d.kind === "override")
     .map(([id, d]) => ({ id, d, c: getCase(data, id) }))
@@ -103,13 +94,42 @@ export function isActionRequest(question: string): boolean {
 
 export function detectIntent(question: string): AskIntent {
   const q = normalize(question);
-  if (has(q, /\b(what did i|watchlist|watching|approved|snooze|snoozed|dismiss|dismissed|handled|resolved|override|status|my calls|my decisions)\b/)) return "status";
-  if (has(q, /\b(vs|versus|compare|comparison|channels?)\b/) || has(q, /\bmeta\b.*\btiktok\b|\btiktok\b.*\bmeta\b/)) return "compare";
-  if (has(q, /\b(drop|dropped|dropping|decline|declined|fell|fallen|broad|spring collection)\b/)) return "drop";
+  if (
+    has(
+      q,
+      /\b(what did i|watchlist|watching|approved|snooze|snoozed|dismiss|dismissed|handled|resolved|override|status|my calls|my decisions)\b/
+    )
+  )
+    return "status";
+  if (
+    has(q, /\b(vs|versus|compare|comparison|channels?)\b/) ||
+    has(q, /\bmeta\b.*\btiktok\b|\btiktok\b.*\bmeta\b/)
+  )
+    return "compare";
+  if (has(q, /\b(drop|dropped|dropping|decline|declined|fell|fallen|broad|spring collection)\b/))
+    return "drop";
   if (has(q, /\b(leak|leaking|funnel|checkout|abandon|stall)\b/)) return "leak";
-  if (has(q, /\b(lie|lies|losing money|lose money|fake|looks profitable|unprofitable|bleed|bleeding)\b/)) return "lie";
-  if (has(q, /\b(real roas|true roas|true number|true profit|true poas|really earn|blended|overstat|overall|in total|how much.*(spend|profit))\b/)) return "profit";
-  if (has(q, /\b(focus|start|first|priorit|top|attention|biggest|matter|important|next|where.*(look|focus|start)|what.*(matter|first|next))\b/)) return "focus";
+  if (
+    has(
+      q,
+      /\b(lie|lies|losing money|lose money|fake|looks profitable|unprofitable|bleed|bleeding)\b/
+    )
+  )
+    return "lie";
+  if (
+    has(
+      q,
+      /\b(real roas|true roas|true number|true profit|true poas|really earn|blended|overstat|overall|in total|how much.*(spend|profit))\b/
+    )
+  )
+    return "profit";
+  if (
+    has(
+      q,
+      /\b(focus|start|first|priorit|top|attention|biggest|matter|important|next|where.*(look|focus|start)|what.*(matter|first|next))\b/
+    )
+  )
+    return "focus";
   return "help";
 }
 
@@ -136,8 +156,7 @@ function activeLeaks(s: AskSnapshot) {
 
 function actionAnswer(s: AskSnapshot): AskAnswer {
   const top = s.waiting[0] ?? null;
-  const prefix =
-    "I can recommend, but I don't take actions on your behalf — here's what I'd do:";
+  const prefix = "I can recommend, but I don't take actions on your behalf — here's what I'd do:";
   if (!top) {
     return {
       intent: "action",
@@ -154,7 +173,10 @@ function actionAnswer(s: AskSnapshot): AskAnswer {
     intent: "action",
     text: `${prefix} ${top.title}: ${steps} The full plan with timings lives on the case — open it and approve when ready.`,
     answeredFrom: ["waiting list · ranked by money", "case plan"],
-    followUp: ["Where should I focus?", ...(s.watched.length > 0 ? ["What did I approve?"] : ["What's my real ROAS?"])],
+    followUp: [
+      "Where should I focus?",
+      ...(s.watched.length > 0 ? ["What did I approve?"] : ["What's my real ROAS?"]),
+    ],
     caseId: top.id,
   };
 }
@@ -268,7 +290,11 @@ export function answerAsk(s: AskSnapshot, question: string): AskAnswer {
           text: s.data.hasDaily
             ? `No sharp ROAS drop in the daily scan — nothing fell ${ROAS_DROP_MIN_PCT}% or more.`
             : "Daily data isn't loaded, so I can't scan for drops. Load daily_adset.csv and ask me again.",
-          answeredFrom: [s.data.hasDaily ? "daily scan · first-half vs second-half" : "daily_adset.csv (missing)"],
+          answeredFrom: [
+            s.data.hasDaily
+              ? "daily scan · first-half vs second-half"
+              : "daily_adset.csv (missing)",
+          ],
           followUp: ["Where should I focus?"],
           caseId: null,
         };
@@ -347,7 +373,9 @@ export function answerAsk(s: AskSnapshot, question: string): AskAnswer {
         answeredFrom: ["funnel.csv · sessions → purchases per channel"],
         followUp: [
           ...(activeLeaks(s)[0]
-            ? [`Why is ${channelLabel(activeLeaks(s)[0].channel)} ${stepLabel(activeLeaks(s)[0].stepIdx - 1)} → ${stepLabel(activeLeaks(s)[0].stepIdx)} leaking?`]
+            ? [
+                `Why is ${channelLabel(activeLeaks(s)[0].channel)} ${stepLabel(activeLeaks(s)[0].stepIdx - 1)} → ${stepLabel(activeLeaks(s)[0].stepIdx)} leaking?`,
+              ]
             : []),
           "Where should I focus?",
         ].slice(0, 2),

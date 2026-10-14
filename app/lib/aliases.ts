@@ -12,13 +12,42 @@ export const HEADER_ALIASES: Record<string, string[]> = {
   adset_id: ["adset_id", "adsetid", "ad_set", "adset", "ad_set_id", "campaign_id"],
   adset_name: ["adset_name", "adsetname", "ad_set_name", "adset", "campaign", "campaign_name"],
   channel: ["channel", "platform", "media_source", "source", "network"],
-  spend_egp: ["spend_egp", "spend", "cost", "amount_spent", "ad_spend", "media_cost", "media_spend"],
+  spend_egp: [
+    "spend_egp",
+    "spend",
+    "cost",
+    "amount_spent",
+    "ad_spend",
+    "media_cost",
+    "media_spend",
+  ],
   platform_roas: ["platform_roas", "roas", "platformroas"],
   order_id: ["order_id", "orderid", "order", "order_number", "order_no"],
-  order_value_egp: ["order_value_egp", "order_value", "ordervalue", "value", "revenue", "total", "grand_total", "amount"],
-  courier_status: ["courier_status", "status", "delivery_status", "shipping_status", "fulfillment_status"],
+  order_value_egp: [
+    "order_value_egp",
+    "order_value",
+    "ordervalue",
+    "value",
+    "revenue",
+    "total",
+    "grand_total",
+    "amount",
+  ],
+  courier_status: [
+    "courier_status",
+    "status",
+    "delivery_status",
+    "shipping_status",
+    "fulfillment_status",
+  ],
   cogs_egp: ["cogs_egp", "cogs", "cost_of_goods", "product_cost"],
-  shipping_cost_egp: ["shipping_cost_egp", "shipping_cost", "shipping", "delivery_fee", "shipping_fee"],
+  shipping_cost_egp: [
+    "shipping_cost_egp",
+    "shipping_cost",
+    "shipping",
+    "delivery_fee",
+    "shipping_fee",
+  ],
   return_shipping_egp: ["return_shipping_egp", "return_shipping", "return_cost", "rto_cost"],
   ad_id: ["ad_id", "adid", "ad", "creative_id", "creative"],
   ad_name: ["ad_name", "adname", "ad", "creative", "creative_name"],
@@ -31,14 +60,22 @@ export const HEADER_ALIASES: Record<string, string[]> = {
   cpc_egp: ["cpc_egp", "cpc", "cost_per_click"],
   ctr_pct: ["ctr_pct", "ctr_percent", "ctr"],
   aov_egp: ["aov_egp", "aov", "avg_order_value"],
-  failed_delivery_rate_pct: ["failed_delivery_rate_pct", "failed_delivery_rate", "failed_rate", "rto_rate"],
+  failed_delivery_rate_pct: [
+    "failed_delivery_rate_pct",
+    "failed_delivery_rate",
+    "failed_rate",
+    "rto_rate",
+  ],
   step: ["step", "stage", "event", "funnel_step"],
   count: ["count", "users", "total", "volume", "sessions"],
 };
 
 /** Lowercase, strip spaces/underscores/hyphens — the P6-03 matching rule. */
 export function normalizeHeader(h: string): string {
-  return h.trim().toLowerCase().replace(/[\s_\-]+/g, "");
+  return h
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_\-]+/g, "");
 }
 
 const aliasIndex: Record<string, string[]> = (() => {

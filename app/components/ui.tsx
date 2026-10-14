@@ -31,7 +31,15 @@ export function Title({ children, className = "" }: { children: ReactNode; class
   return <h3 className={`text-base font-semibold text-slate-100 ${className}`}>{children}</h3>;
 }
 
-export function Table({ children, className = "", onScroll }: { children: ReactNode; className?: string; onScroll?: (e: UIEvent<HTMLDivElement>) => void }) {
+export function Table({
+  children,
+  className = "",
+  onScroll,
+}: {
+  children: ReactNode;
+  className?: string;
+  onScroll?: (e: UIEvent<HTMLDivElement>) => void;
+}) {
   return (
     <div className="overflow-x-auto" onScroll={onScroll}>
       <table className={`w-full text-left text-sm ${className}`}>{children}</table>
@@ -47,7 +55,13 @@ export function TableBody({ children }: { children: ReactNode }) {
   return <tbody>{children}</tbody>;
 }
 
-export function TableRow({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function TableRow({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return <tr className={`border-t border-white/5 ${className}`}>{children}</tr>;
 }
 
@@ -59,7 +73,13 @@ export function TableHeaderCell({ children }: { children: ReactNode }) {
   );
 }
 
-export function TableCell({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function TableCell({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return <td className={`px-3 py-2.5 text-slate-300 ${className}`}>{children}</td>;
 }
 
@@ -74,7 +94,9 @@ export function Badge({ children, className = "" }: { children: ReactNode; class
 /** Small mono eyebrow label, ops-room style. */
 export function Eyebrow({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`font-mono text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400 ${className}`}>
+    <p
+      className={`font-mono text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400 ${className}`}
+    >
       {children}
     </p>
   );

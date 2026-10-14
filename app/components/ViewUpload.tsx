@@ -11,10 +11,30 @@ import { fmtEGP, fmtX } from "@/lib/format";
 import type { CsvTables, DemoData } from "@/lib/types";
 
 const FILES: { key: keyof CsvTables; label: string; required: boolean; hint: string }[] = [
-  { key: "spend", label: "spend.csv", required: true, hint: "adset_id, adset_name, channel, spend_egp, platform_roas" },
-  { key: "orders", label: "orders.csv", required: true, hint: "order_id, adset_id, order_value_egp, courier_status, cogs_egp?, shipping_cost_egp?, ad_id?" },
-  { key: "ads", label: "ads.csv", required: false, hint: "ad_id, ad_name, adset_id, spend_egp, platform_roas, frequency, ctr_14d_ago, ctr_now" },
-  { key: "daily", label: "daily_adset.csv", required: false, hint: "date, adset_id, spend_egp, platform_roas, cpc_egp, ctr_pct, aov_egp, failed_delivery_rate_pct" },
+  {
+    key: "spend",
+    label: "spend.csv",
+    required: true,
+    hint: "adset_id, adset_name, channel, spend_egp, platform_roas",
+  },
+  {
+    key: "orders",
+    label: "orders.csv",
+    required: true,
+    hint: "order_id, adset_id, order_value_egp, courier_status, cogs_egp?, shipping_cost_egp?, ad_id?",
+  },
+  {
+    key: "ads",
+    label: "ads.csv",
+    required: false,
+    hint: "ad_id, ad_name, adset_id, spend_egp, platform_roas, frequency, ctr_14d_ago, ctr_now",
+  },
+  {
+    key: "daily",
+    label: "daily_adset.csv",
+    required: false,
+    hint: "date, adset_id, spend_egp, platform_roas, cpc_egp, ctr_pct, aov_egp, failed_delivery_rate_pct",
+  },
   { key: "funnel", label: "funnel.csv", required: false, hint: "date, channel, step, count" },
 ];
 
@@ -44,7 +64,9 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
   // P1-05: per-file row counts live next to each slot — not in the warnings.
   const [counts, setCounts] = useState<Partial<Record<keyof CsvTables, number>>>({});
   // P6-06: progress + cancellation for large exports.
-  const [progress, setProgress] = useState<{ phase: string; done: number; total: number } | null>(null);
+  const [progress, setProgress] = useState<{ phase: string; done: number; total: number } | null>(
+    null
+  );
   const [running, setRunning] = useState(false);
   const [wasCancelled, setWasCancelled] = useState(false);
   const cancelRef = useRef(false);
@@ -81,14 +103,15 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
           continue;
         }
         setProgress({ phase: `Parsing ${f.label}`, done: 0, total: 1 });
-        const pf: ParsedFile = text.length > CHUNKED_BYTES
-          ? await parseCsvLarge(
-              f.key,
-              text,
-              (frac) => setProgress({ phase: `Parsing ${f.label}`, done: frac, total: 1 }),
-              () => cancelRef.current
-            )
-          : parseCsv(f.key, text);
+        const pf: ParsedFile =
+          text.length > CHUNKED_BYTES
+            ? await parseCsvLarge(
+                f.key,
+                text,
+                (frac) => setProgress({ phase: `Parsing ${f.label}`, done: frac, total: 1 }),
+                () => cancelRef.current
+              )
+            : parseCsv(f.key, text);
         if (pf.cancelled || cancelRef.current) {
           setWasCancelled(true);
           setLoaded(false);
@@ -119,7 +142,8 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
           rship: parseFloat(rship) || 0,
         },
         rowNums,
-        (done, total) => setProgress({ phase: "Computing profit, cases and headlines", done, total }),
+        (done, total) =>
+          setProgress({ phase: "Computing profit, cases and headlines", done, total }),
         () => cancelRef.current
       );
       if (res.cancelled || cancelRef.current) {
@@ -162,42 +186,49 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
       <Eyebrow className="!text-emerald-300">Your data</Eyebrow>
       <h1 className="mb-2 mt-1 text-3xl font-bold tracking-tight text-slate-50">Load your CSVs</h1>
       <p className="mb-6 max-w-2xl text-slate-400">
-        Drop in a merchant export and the whole walkthrough re-renders on their numbers —
-        parsed and computed right here in your browser. Nothing is uploaded anywhere.
-        Only <span className="font-semibold text-slate-200">spend.csv</span> and{" "}
-        <span className="font-semibold text-slate-200">orders.csv</span> are required; the rest unlock
-        their parts of the investigation when present.
+        Drop in a merchant export and the whole walkthrough re-renders on their numbers — parsed and
+        computed right here in your browser. Nothing is uploaded anywhere. Only{" "}
+        <span className="font-semibold text-slate-200">spend.csv</span> and{" "}
+        <span className="font-semibold text-slate-200">orders.csv</span> are required; the rest
+        unlock their parts of the investigation when present.
       </p>
 
       <Card className="mb-6 p-5">
         <div data-tour="upload-files">
-        <Title>Files</Title>
-        <div className="mt-4 space-y-4">
-          {FILES.map((f) => (
-            <div key={f.key} className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-              <span className="font-mono text-sm font-medium text-slate-300 sm:w-40">
-                {f.label}{" "}
-                {f.required ? (
-                  <span className="text-rose-400">*</span>
-                ) : (
-                  <span className="text-xs font-normal text-slate-400">(optional)</span>
-                )}
-              </span>
-              <input
-                type="file"
-                accept=".csv"
-                onChange={(e) => onFile(f.key, e.target.files?.[0])}
-                className="min-h-[44px] font-mono text-sm text-slate-400 sm:min-h-0"
-              />
-              {texts[f.key] && counts[f.key] != null ? (
-                <span className="font-mono text-xs text-emerald-300">✓ {counts[f.key]?.toLocaleString()} rows</span>
-              ) : texts[f.key] ? (
-                <span className="font-mono text-xs text-slate-400">✓ attached — run Compute to parse</span>
-              ) : null}
-              <p className="w-full font-mono text-xs text-slate-400">{f.hint}</p>
-            </div>
-          ))}
-        </div>
+          <Title>Files</Title>
+          <div className="mt-4 space-y-4">
+            {FILES.map((f) => (
+              <div
+                key={f.key}
+                className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3"
+              >
+                <span className="font-mono text-sm font-medium text-slate-300 sm:w-40">
+                  {f.label}{" "}
+                  {f.required ? (
+                    <span className="text-rose-400">*</span>
+                  ) : (
+                    <span className="text-xs font-normal text-slate-400">(optional)</span>
+                  )}
+                </span>
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => onFile(f.key, e.target.files?.[0])}
+                  className="min-h-[44px] font-mono text-sm text-slate-400 sm:min-h-0"
+                />
+                {texts[f.key] && counts[f.key] != null ? (
+                  <span className="font-mono text-xs text-emerald-300">
+                    ✓ {counts[f.key]?.toLocaleString()} rows
+                  </span>
+                ) : texts[f.key] ? (
+                  <span className="font-mono text-xs text-slate-400">
+                    ✓ attached — run Compute to parse
+                  </span>
+                ) : null}
+                <p className="w-full font-mono text-xs text-slate-400">{f.hint}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </Card>
 
@@ -205,20 +236,48 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         <Title>Brand & cost defaults</Title>
         <div className="mt-4 grid gap-4 md:grid-cols-4">
           <label className="text-sm">
-            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">Brand name</span>
-            <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. InYourShoe" className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]" />
+            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">
+              Brand name
+            </span>
+            <input
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              placeholder="e.g. InYourShoe"
+              className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]"
+            />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">Default COGS (EGP)</span>
-            <input value={cogs} onChange={(e) => setCogs(e.target.value)} inputMode="decimal" className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]" />
+            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">
+              Default COGS (EGP)
+            </span>
+            <input
+              value={cogs}
+              onChange={(e) => setCogs(e.target.value)}
+              inputMode="decimal"
+              className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]"
+            />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">Default shipping (EGP)</span>
-            <input value={ship} onChange={(e) => setShip(e.target.value)} inputMode="decimal" className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]" />
+            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">
+              Default shipping (EGP)
+            </span>
+            <input
+              value={ship}
+              onChange={(e) => setShip(e.target.value)}
+              inputMode="decimal"
+              className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]"
+            />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">Default return shipping</span>
-            <input value={rship} onChange={(e) => setRship(e.target.value)} inputMode="decimal" className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]" />
+            <span className="mb-1 block font-mono text-xs uppercase tracking-wider text-slate-400">
+              Default return shipping
+            </span>
+            <input
+              value={rship}
+              onChange={(e) => setRship(e.target.value)}
+              inputMode="decimal"
+              className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-400 min-h-[44px]"
+            />
           </label>
         </div>
         <Text className="mt-2 font-mono text-xs">
@@ -231,7 +290,9 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         <Card className="mb-6 border-rose-500/40 bg-rose-500/[0.06] p-5">
           <Title className="text-rose-300">Couldn&apos;t load</Title>
           <ul className="mt-2 list-disc pl-5 text-sm text-rose-300">
-            {errors.map((e, i) => <li key={i}>{e}</li>)}
+            {errors.map((e, i) => (
+              <li key={i}>{e}</li>
+            ))}
           </ul>
           {data.source === "csv" && (
             <p className="mt-2 text-sm text-slate-300">
@@ -244,16 +305,16 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         <Card className="mb-6 border-amber-400/30 bg-amber-400/[0.05] p-5">
           <Title className="text-amber-300">Loaded with notes</Title>
           <ul className="mt-2 list-disc pl-5 text-sm text-amber-200">
-            {warnings.map((w, i) => <li key={i}>{w}</li>)}
+            {warnings.map((w, i) => (
+              <li key={i}>{w}</li>
+            ))}
           </ul>
         </Card>
       )}
       {errors.length === 0 && loaded && warnings.length === 0 && (
         <Card className="mb-6 border-emerald-400/30 bg-emerald-400/[0.05] p-5">
           <Title className="text-emerald-300">Loaded</Title>
-          <Text className="mt-2">
-            {loadedSummary(data)}
-          </Text>
+          <Text className="mt-2">{loadedSummary(data)}</Text>
         </Card>
       )}
       {errors.length === 0 && loaded && warnings.length > 0 && (
@@ -273,7 +334,9 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         <Card className="mb-6 border-white/10 bg-white/[0.02] p-5">
           <Title>File notes</Title>
           <ul className="mt-2 list-disc space-y-1 pl-5 font-mono text-xs text-slate-400">
-            {infos.map((n, i) => <li key={i}>{n}</li>)}
+            {infos.map((n, i) => (
+              <li key={i}>{n}</li>
+            ))}
           </ul>
         </Card>
       )}
@@ -282,7 +345,10 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         <Card className="mb-6 border-cyan-400/25 p-5">
           <div className="flex items-center justify-between gap-3">
             <Text className="font-mono text-xs">
-              {progress.phase} — {progress.total > 1 ? `${progress.done.toLocaleString()} / ${progress.total.toLocaleString()}` : "…"}
+              {progress.phase} —{" "}
+              {progress.total > 1
+                ? `${progress.done.toLocaleString()} / ${progress.total.toLocaleString()}`
+                : "…"}
             </Text>
             <button
               onClick={() => {
@@ -296,7 +362,9 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
           <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
             <div
               className="h-full rounded-full bg-cyan-400 transition-[width]"
-              style={{ width: `${progress.total > 1 ? Math.min(100, (progress.done / progress.total) * 100) : 50}%` }}
+              style={{
+                width: `${progress.total > 1 ? Math.min(100, (progress.done / progress.total) * 100) : 50}%`,
+              }}
             />
           </div>
         </Card>
@@ -323,7 +391,8 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
       <Card className="mb-6 mt-6 p-5">
         <Title>Templates & sample export</Title>
         <Text className="mt-2">
-          Start from headers that always load — or grab the full fictional dataset to round-trip the demo.
+          Start from headers that always load — or grab the full fictional dataset to round-trip the
+          demo.
         </Text>
         <div className="mt-3 flex flex-wrap gap-2">
           <button
@@ -341,7 +410,9 @@ export default function ViewUpload({ onDone }: { onDone: () => void }) {
         </div>
       </Card>
       <p className="mt-4 font-mono text-xs text-slate-400">
-        Currently showing: {data.source === "csv" ? `merchant data (${data.brand.name})` : "the fictional sample"}. Switch back anytime from the badge, top right.
+        Currently showing:{" "}
+        {data.source === "csv" ? `merchant data (${data.brand.name})` : "the fictional sample"}.
+        Switch back anytime from the badge, top right.
       </p>
     </div>
   );

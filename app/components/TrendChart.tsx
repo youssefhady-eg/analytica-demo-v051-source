@@ -25,7 +25,11 @@ export default function TrendChart({ rows, title }: { rows: DailyRow[]; title: s
   };
   const option = {
     backgroundColor: "transparent",
-    title: { text: title, left: "center", textStyle: { fontSize: CHART_TITLE_FONT, color: "#e2e8f0" } },
+    title: {
+      text: title,
+      left: "center",
+      textStyle: { fontSize: CHART_TITLE_FONT, color: "#e2e8f0" },
+    },
     tooltip: {
       trigger: "axis",
       backgroundColor: "#0d1420",
@@ -40,8 +44,18 @@ export default function TrendChart({ rows, title }: { rows: DailyRow[]; title: s
     },
     xAxis: { type: "category", data: sorted.map((r) => r.date.slice(5)), ...axis },
     yAxis: [
-      { type: "value", name: "EGP", nameTextStyle: { color: "#94a3b8", fontSize: CHART_BASE_FONT }, ...axis },
-      { type: "value", name: "ROAS", nameTextStyle: { color: "#94a3b8", fontSize: CHART_BASE_FONT }, ...axis },
+      {
+        type: "value",
+        name: "EGP",
+        nameTextStyle: { color: "#94a3b8", fontSize: CHART_BASE_FONT },
+        ...axis,
+      },
+      {
+        type: "value",
+        name: "ROAS",
+        nameTextStyle: { color: "#94a3b8", fontSize: CHART_BASE_FONT },
+        ...axis,
+      },
     ],
     series: [
       {
