@@ -50,6 +50,10 @@ aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   imported it — `components/ui.tsx` provides the drop-in primitives. With it
   gone (and `echarts-for-react`, which peers `react >=16`, already React
   19-ready) React 18 → 19 is unblocked.
+- **Node floor raised 20 → 22.** Vitest 5 (and its `vite` dependency) require
+  Node `^22.12.0`; the previous `>= 20` floor was only tolerated as an npm
+  `EBADENGINE` warning. `engines.node`, `app/.nvmrc` and the CI
+  `actions/setup-node` version are now `>= 22` / `22`.
 
 ## [0.1.0]
 
